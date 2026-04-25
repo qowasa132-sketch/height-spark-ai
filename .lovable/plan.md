@@ -1,57 +1,90 @@
-# Build the Free Plan Tab (Daily Trackers)
+# Phase 2 — الخطة (Plan tab v2)
 
-The bottom tabs currently all route to `/home`, which is broken. The most foundational next step is the **Free Plan tab** — the daily habit trackers (Sleep, Nutrition, Sport). This unlocks real user value before we add Pro (payments) or AI (chat).
+Rebuild `/plan` as a 4-section Arabic experience with deep daily tracking,
+streaks, reminders and badges. Replace the current simple tracker.
 
-## What we'll build
+## Section 1 — التمارين (Exercise)
+- **تمارين تصحيح الوضعية (Posture)**: library of 4–6 simple exercises with
+  step-by-step animated SVG/CSS guides focused on spinal alignment.
+- **روتين الإطالة الأساسي (Stretching)**: guided routine (timer per move) to
+  decompress the spine and improve flexibility.
+- Mark workout as done → counts toward "1 hour of exercise" daily habit and
+  sport minutes log.
 
-### 1. New route: `src/routes/plan.tsx` — `/plan`
-A daily tracker page with three sections:
+## Section 2 — التغذية (Nutrition) — Pro calorie tracker
+Replaces the simple chip list. Mini MyFitnessPal:
+- **Add food by name**: search a built-in Arabic/English food DB
+  (~80 common foods) with calories + protein + calcium + vitamin D per 100g.
+- **Barcode scan**: use OpenFoodFacts public API (no key required) via
+  `@zxing/browser` for camera scanning. Graceful fallback to manual entry.
+- Daily totals: calories, protein (g), calcium (mg), vitamin D (IU).
+- **Water intake**: +250ml buttons, goal 2L, reminder toggle.
+- **BMI calculator**: derived from profile height + weight.
+- **Weekly weight log**: simple weight entry per day, sparkline of last 7 entries.
 
-- **Sleep** — slider 4–12 hours with visual moon indicator. Saves last night's hours.
-- **Nutrition** — quick-add chips for growth-supporting foods (protein, dairy, leafy greens, fruit, nuts). Tap to log. Daily counter.
-- **Sport** — toggle buttons for activity type (stretching, basketball, swimming, cycling, jump rope) + minutes input. Daily counter.
+## Section 3 — النوم (Sleep)
+- Hours slider 4–12h, goal configurable (default 8h).
+- Bedtime + wake time inputs (optional).
+- 7-day sleep average chart.
 
-Each section shows today's progress vs. a recommended daily goal, with a circular ring or progress bar.
+## Section 4 — العادات اليومية (Daily Habits) — streak grid
+Six fixed habits with simple toggle + streak per habit:
+1. إيقاف الشاشات قبل النوم بساعة
+2. لا كافيين قبل 8 ساعات من النوم
+3. فيتامينات الزنك + D3
+4. المشي 10,000 خطوة
+5. شرب 2 لتر ماء
+6. ساعة تمرين
 
-### 2. Daily log storage: `src/lib/dailyLog.ts`
-Local-storage-based log keyed by date (`YYYY-MM-DD`):
-```ts
-interface DailyLog {
-  date: string;
-  sleepHours?: number;
-  nutritionItems: string[];   // e.g. ["protein", "dairy"]
-  sportMinutes: number;
-  sportTypes: string[];
-}
-```
-Helpers: `loadTodayLog()`, `saveTodayLog()`, `loadLogHistory(days)` for the streak.
+Top-of-page combined streak (🔥) = consecutive days with ≥1 habit done.
 
-### 3. Streak indicator
-Top of plan page: "🔥 X day streak" computed from history of consecutive days with at least one logged item.
+## Reminders & Notifications
+- Settings panel inside `/plan`:
+  - تذكير النوم 10 مساءً (default on)
+  - تذكير الماء كل ساعتين
+  - تذكير التمرين يومياً 6 مساءً
+  - تذكير القياسات أسبوعياً
+- Implementation: Browser Notifications API (request permission) +
+  in-app toast fallback via `sonner`. Schedule via `setTimeout` loop
+  while tab is open + check on visibility change.
 
-### 4. Wire up `BottomTabs`
-Update `src/components/BottomTabs.tsx` so:
-- Home tab → `/home`
-- Plan (Free) tab → `/plan` ✅ new
-- Pro tab → `/paywall` (already exists)
-- AI tab → stays on `/home` for now, with a "Coming soon" tooltip
+## Achievement Badges
+Award + persist badges in localStorage:
+- 🥇 أول يوم تتبّع
+- 🔥 ٧ أيام متتالية
+- 💧 أسبوع كامل من شرب الماء
+- 🏃 ١٠ تمارين مكتملة
+- 🌙 أسبوع نوم ٨ ساعات
+- 🎯 إكمال جميع العادات في يوم واحد
+Badges drawer accessible from top of `/plan`.
 
-### 5. Home dashboard sync
-Update `src/routes/home.tsx` "Track" cards (Sleep, Nutrition, Sport) to read from today's log so values stay in sync between Home and Plan.
+## Architecture
+- **New** `src/lib/foodDb.ts` — built-in food database (Arabic/English names + macros).
+- **New** `src/lib/notifications.ts` — permission, scheduling, in-app fallback.
+- **New** `src/lib/badges.ts` — badge definitions, evaluation, storage.
+- **Extend** `src/lib/dailyLog.ts`: add `foods`, `waterMl`, `weightKg`,
+  `bedtime`, `wakeTime`, `habits` (record of 6 booleans), `workoutsDone`.
+- **New components** in `src/components/plan/`:
+  - `ExerciseSection.tsx` (with `ExerciseLibrary` modal)
+  - `NutritionSection.tsx` (with `FoodSearch` + `BarcodeScanner` modals)
+  - `SleepSection.tsx`
+  - `HabitsSection.tsx`
+  - `BadgesDrawer.tsx`
+  - `RemindersSettings.tsx`
+- **Rewrite** `src/routes/plan.tsx` as a thin shell composing the sections.
+- **i18n**: add ~80 keys under `plan.*` in `src/lib/locales/ar.ts`
+  (English file kept minimal since app is Arabic-only).
+- **Hydration fix**: gate any translated text in `BottomTabs` and root
+  layouts behind a `mounted` flag (also fixes existing console error).
 
-### 6. i18n strings
-Add `plan.*` keys (sleep, nutrition, sport, streak, recommended, addItem, minutes, etc.) to both `src/lib/locales/en.ts` and `src/lib/locales/ar.ts`.
-
-### 7. Hydration fix (small follow-up)
-The console shows a hydration mismatch on `/home` because i18n resolves the language on the client only. Apply the same `mounted` gate pattern already used in `LangToggle` to any translated text on `home.tsx` (or render the Home page client-only after mount).
-
-## Out of scope for this step
-- Pro tab content (will need payment provider — separate plan)
-- AI chat tab (will need Lovable AI Gateway setup — separate plan)
-- Cross-device sync (currently device-local; can add Lovable Cloud later)
+## Out of scope this round
+- Cross-device sync of food log (still device-local).
+- AI-based food photo recognition (Pro/AI tab future work).
+- Real push notifications when tab closed (would need service worker).
 
 ## Files touched
-- **New:** `src/routes/plan.tsx`, `src/lib/dailyLog.ts`
-- **Edit:** `src/components/BottomTabs.tsx`, `src/routes/home.tsx`, `src/lib/locales/en.ts`, `src/lib/locales/ar.ts`
-
-After this ships, the next logical step would be the **AI chat tab** (cheaper to build than Pro since Lovable AI Gateway has no API key requirement), then the **Pro paywall** with a real payment provider.
+- New: `src/lib/foodDb.ts`, `src/lib/notifications.ts`, `src/lib/badges.ts`,
+  `src/components/plan/*` (6 files).
+- Edit: `src/lib/dailyLog.ts`, `src/routes/plan.tsx`, `src/lib/locales/ar.ts`,
+  `src/lib/locales/en.ts`, `src/components/BottomTabs.tsx`.
+- Dep: `bun add @zxing/browser @zxing/library`
