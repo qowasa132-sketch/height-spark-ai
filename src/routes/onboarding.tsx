@@ -16,7 +16,7 @@ export const Route = createFileRoute("/onboarding")({
   head: () => ({ meta: [{ title: "Onboarding — HeightBoost" }] }),
 });
 
-const TOTAL_STEPS = 16;
+const TOTAL_STEPS = 15;
 
 function Onboarding() {
   const { t } = useTranslation();
@@ -136,36 +136,13 @@ function Step({
       );
     case 3:
       return (
-        <OnboardingStep
-          title={t("onboarding.ethnicity.title")}
-          subtitle={t("onboarding.ethnicity.subtitle")}
-          canContinue={!!profile.ethnicity}
-          onNext={onNext}
-        >
-          <ChoiceList
-            value={profile.ethnicity}
-            onChange={(v) => update({ ethnicity: v as Profile["ethnicity"] })}
-            options={[
-              { value: "asian", label: t("onboarding.ethnicity.asian") },
-              { value: "black", label: t("onboarding.ethnicity.black") },
-              { value: "caucasian", label: t("onboarding.ethnicity.caucasian") },
-              { value: "hispanic", label: t("onboarding.ethnicity.hispanic") },
-              { value: "middleEastern", label: t("onboarding.ethnicity.middleEastern") },
-              { value: "mixed", label: t("onboarding.ethnicity.mixed") },
-              { value: "other", label: t("onboarding.ethnicity.other") },
-            ]}
-          />
-        </OnboardingStep>
+        <HeightWeightStep profile={profile} update={update} onNext={onNext} />
       );
     case 4:
       return (
-        <HeightWeightStep profile={profile} update={update} onNext={onNext} />
-      );
-    case 5:
-      return (
         <ParentsStep profile={profile} update={update} onNext={onNext} />
       );
-    case 6:
+    case 5:
       return (
         <OnboardingStep
           title={t("onboarding.foot.title")}
