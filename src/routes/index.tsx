@@ -36,8 +36,8 @@ function Welcome() {
             alt="HeightBoost"
             className="h-32 w-32 rounded-3xl shadow-glow mb-8"
           />
-          <h1 className="text-4xl font-bold tracking-tight text-foreground glow-text">
-            {title}
+          <h1 className="text-4xl font-bold tracking-tight text-foreground glow-text" dir="ltr">
+            HeightBoost
           </h1>
           <p className="mt-4 text-base text-muted-foreground leading-relaxed max-w-xs">
             {subtitle}
