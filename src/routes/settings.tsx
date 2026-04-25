@@ -5,7 +5,7 @@ import { clearProfile } from "@/lib/profile";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
-  head: () => ({ meta: [{ title: "Settings — HeightBoost AI" }] }),
+  head: () => ({ meta: [{ title: "Settings — HeightBoost" }] }),
 });
 
 function SettingsPage() {

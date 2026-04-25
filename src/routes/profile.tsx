@@ -6,7 +6,7 @@ import { loadProfile, type Profile } from "@/lib/profile";
 
 export const Route = createFileRoute("/profile")({
   component: ProfilePage,
-  head: () => ({ meta: [{ title: "Profile — HeightBoost AI" }] }),
+  head: () => ({ meta: [{ title: "Profile — HeightBoost" }] }),
 });
 
 function ProfilePage() {

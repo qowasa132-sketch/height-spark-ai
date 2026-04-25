@@ -1,5 +1,5 @@
 export const ar = {
-  app: { name: "هايت بوست AI", tagline: "اكتشف أقصى إمكانات طولك" },
+  app: { name: "هايت بوست", tagline: "اكتشف أقصى إمكانات طولك" },
   common: {
     next: "التالي",
     back: "رجوع",

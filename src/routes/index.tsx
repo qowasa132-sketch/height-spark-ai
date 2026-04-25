@@ -8,7 +8,7 @@ export const Route = createFileRoute("/")({
   component: Welcome,
   head: () => ({
     meta: [
-      { title: "HeightBoost AI — Unlock Your Height Potential" },
+      { title: "HeightBoost — Unlock Your Height Potential" },
       { name: "description", content: "Science-backed height prediction and a personalized growth plan. Private, no account needed." },
     ],
   }),
@@ -44,7 +44,7 @@ function Welcome() {
         <div className="flex flex-col items-center text-center animate-[fade-in_0.6s_ease-out]">
           <img
             src={appIcon}
-            alt="HeightBoost AI"
+            alt="HeightBoost"
             className="h-32 w-32 rounded-3xl shadow-glow mb-8"
           />
           <h1 className="text-4xl font-bold tracking-tight text-foreground glow-text">

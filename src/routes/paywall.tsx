@@ -8,7 +8,7 @@ import { formatPriceUSD } from "@/lib/currency";
 
 export const Route = createFileRoute("/paywall")({
   component: Paywall,
-  head: () => ({ meta: [{ title: "Unlock your plan — HeightBoost AI" }] }),
+  head: () => ({ meta: [{ title: "Unlock your plan — HeightBoost" }] }),
 });
 
 type Plan = "yearly" | "monthly" | "weekly";

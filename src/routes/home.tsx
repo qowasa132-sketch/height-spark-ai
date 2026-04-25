@@ -8,7 +8,7 @@ import { BottomTabs } from "@/components/BottomTabs";
 
 export const Route = createFileRoute("/home")({
   component: HomePage,
-  head: () => ({ meta: [{ title: "Home — HeightBoost AI" }] }),
+  head: () => ({ meta: [{ title: "Home — HeightBoost" }] }),
 });
 
 function HomePage() {
