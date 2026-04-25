@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Settings, User, Moon, Apple, Dumbbell, Sparkles, Lock } from "lucide-react";
 import { loadProfile, type Profile } from "@/lib/profile";
 import { predict, cmToFtIn, type Prediction } from "@/lib/prediction";
+import { loadTodayLog, type DailyLog } from "@/lib/dailyLog";
 import { BottomTabs } from "@/components/BottomTabs";
 
 export const Route = createFileRoute("/home")({
@@ -14,8 +15,10 @@ export const Route = createFileRoute("/home")({
 function HomePage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [mounted, setMounted] = useState(false);
   const [profile, setProfile] = useState<Profile>({ unit: "metric" });
   const [prediction, setPrediction] = useState<Prediction | null>(null);
+  const [log, setLog] = useState<DailyLog | null>(null);
 
   useEffect(() => {
     const p = loadProfile();
@@ -25,7 +28,17 @@ function HomePage() {
     }
     setProfile(p);
     setPrediction(predict(p));
+    setLog(loadTodayLog());
+    setMounted(true);
   }, [navigate]);
+
+  if (!mounted) {
+    return (
+      <main className="min-h-screen bg-background pb-24">
+        <BottomTabs active="home" />
+      </main>
+    );
+  }
 
   const isImperial = profile.unit === "imperial";
   const heightLabel = (cm: number) => {
@@ -33,6 +46,10 @@ function HomePage() {
     const { ft, in: inches } = cmToFtIn(cm);
     return `${ft}'${inches}"`;
   };
+
+  const sleepValue = log?.sleepHours ? `${log.sleepHours}h` : "—";
+  const nutritionValue = log ? String(log.nutritionItems.length) : "0";
+  const sportValue = log ? `${log.sportMinutes}m` : "0";
 
   return (
     <main className="relative min-h-screen bg-background pb-24">
@@ -91,15 +108,15 @@ function HomePage() {
           </section>
         )}
 
-        {/* Dashboard cards */}
+        {/* Dashboard cards — link to plan */}
         <section className="mt-6">
           <h3 className="mb-3 text-sm font-semibold text-muted-foreground uppercase tracking-wider">
             {t("home.track")}
           </h3>
           <div className="grid grid-cols-3 gap-3">
-            <DashCard icon={<Moon className="h-5 w-5" />} label={t("home.sleep")} value={profile.sleepHours ? `${profile.sleepHours}h` : "—"} />
-            <DashCard icon={<Apple className="h-5 w-5" />} label={t("home.nutrition")} value="0" />
-            <DashCard icon={<Dumbbell className="h-5 w-5" />} label={t("home.sport")} value="0" />
+            <DashCard to="/plan" icon={<Moon className="h-5 w-5" />} label={t("home.sleep")} value={sleepValue} />
+            <DashCard to="/plan" icon={<Apple className="h-5 w-5" />} label={t("home.nutrition")} value={nutritionValue} />
+            <DashCard to="/plan" icon={<Dumbbell className="h-5 w-5" />} label={t("home.sport")} value={sportValue} />
           </div>
         </section>
 
@@ -126,15 +143,27 @@ function HomePage() {
   );
 }
 
-function DashCard({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
+function DashCard({
+  icon,
+  label,
+  value,
+  to,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  to: "/plan";
+}) {
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-card transition-smooth hover:border-primary/50">
+    <Link
+      to={to}
+      className="rounded-2xl border border-border bg-card p-4 shadow-card transition-smooth hover:border-primary/50"
+    >
       <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary/15 text-primary">
         {icon}
       </div>
       <p className="mt-3 text-[11px] uppercase tracking-wider text-muted-foreground">{label}</p>
       <p className="mt-0.5 text-lg font-bold text-foreground">{value}</p>
-    </div>
+    </Link>
   );
 }
-
