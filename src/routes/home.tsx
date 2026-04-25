@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { Settings, User, Moon, Apple, Dumbbell, Home as HomeIcon, Sparkles, Lock, MessageCircle } from "lucide-react";
+import { Settings, User, Moon, Apple, Dumbbell, Sparkles, Lock } from "lucide-react";
 import { loadProfile, type Profile } from "@/lib/profile";
 import { predict, cmToFtIn, type Prediction } from "@/lib/prediction";
+import { BottomTabs } from "@/components/BottomTabs";
 
 export const Route = createFileRoute("/home")({
   component: HomePage,
