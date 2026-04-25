@@ -16,6 +16,9 @@ export const Route = createFileRoute("/")({
 
 function LangToggle() {
   const { i18n: i } = useTranslation();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   const language = normalizeLanguage(i.resolvedLanguage || i.language);
   const targetLanguage = language === "ar" ? "en" : "ar";
   const label = targetLanguage === "ar" ? "العربية" : "English";
@@ -23,11 +26,12 @@ function LangToggle() {
   return (
     <button
       type="button"
+      suppressHydrationWarning
       aria-label={targetLanguage === "ar" ? "Switch to Arabic" : "Switch to English"}
       onClick={() => setAppLanguage(targetLanguage)}
       className="absolute top-6 end-6 rounded-full border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground backdrop-blur-md transition-smooth hover:bg-card"
     >
-      {label}
+      <span suppressHydrationWarning>{mounted ? label : "\u00a0"}</span>
     </button>
   );
 }
