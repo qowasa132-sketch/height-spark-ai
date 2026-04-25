@@ -13,7 +13,7 @@ import { CostStep } from "@/components/onboarding/CostStep";
 
 export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
-  head: () => ({ meta: [{ title: "Onboarding — HeightBoost AI" }] }),
+  head: () => ({ meta: [{ title: "Onboarding — HeightBoost" }] }),
 });
 
 const TOTAL_STEPS = 16;

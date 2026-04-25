@@ -1,5 +1,5 @@
 export const en = {
-  app: { name: "HeightBoost AI", tagline: "Unlock your maximum height potential" },
+  app: { name: "HeightBoost", tagline: "Unlock your maximum height potential" },
   common: {
     next: "Next",
     back: "Back",
