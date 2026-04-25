@@ -92,10 +92,10 @@ function HomePage() {
               </div>
               <div className="text-end">
                 <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                  Unlocked
+                  مفتوح
                 </p>
                 <p className="mt-1 text-2xl font-bold text-primary">
-                  +{prediction.unlockedCm} cm
+                  +{prediction.unlockedCm} سم
                 </p>
               </div>
             </div>
@@ -130,8 +130,8 @@ function HomePage() {
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground">Unlock Pro features</p>
-              <p className="text-xs text-muted-foreground">AI posture, meal plans & more</p>
+              <p className="text-sm font-semibold text-foreground">افتح ميزات برو</p>
+              <p className="text-xs text-muted-foreground">تحليل القوام بالذكاء، خطط طعام، والمزيد</p>
             </div>
             <Lock className="h-4 w-4 text-primary" />
           </button>

@@ -1,39 +1,36 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import { en } from "./locales/en";
 import { ar } from "./locales/ar";
 
-export type AppLanguage = "en" | "ar";
+export type AppLanguage = "ar";
 
-export function normalizeLanguage(lng?: string | null): AppLanguage {
-  return lng?.toLowerCase().startsWith("ar") ? "ar" : "en";
+export function normalizeLanguage(_lng?: string | null): AppLanguage {
+  return "ar";
 }
 
 if (!i18n.isInitialized) {
   i18n.use(initReactI18next).init({
     resources: {
-      en: { translation: en },
       ar: { translation: ar },
     },
-    lng: "en",
-    fallbackLng: "en",
-    supportedLngs: ["en", "ar"],
+    lng: "ar",
+    fallbackLng: "ar",
+    supportedLngs: ["ar"],
     interpolation: { escapeValue: false },
     react: { useSuspense: false },
   });
 }
 
-export function applyDirection(lng: string) {
+export function applyDirection(_lng?: string) {
   if (typeof document === "undefined") return;
-  const language = normalizeLanguage(lng);
-  document.documentElement.setAttribute("dir", language === "ar" ? "rtl" : "ltr");
-  document.documentElement.setAttribute("lang", language);
+  document.documentElement.setAttribute("dir", "rtl");
+  document.documentElement.setAttribute("lang", "ar");
 }
 
-export async function setAppLanguage(lng: AppLanguage) {
-  if (typeof window !== "undefined") localStorage.setItem("hb_lang", lng);
-  applyDirection(lng);
-  await i18n.changeLanguage(lng);
+export async function setAppLanguage(_lng?: AppLanguage) {
+  if (typeof window !== "undefined") localStorage.setItem("hb_lang", "ar");
+  applyDirection();
+  await i18n.changeLanguage("ar");
 }
 
 i18n.on("languageChanged", applyDirection);

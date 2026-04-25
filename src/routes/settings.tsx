@@ -2,35 +2,31 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft } from "lucide-react";
 import { clearProfile } from "@/lib/profile";
-import { normalizeLanguage, setAppLanguage } from "@/lib/i18n";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
-  head: () => ({ meta: [{ title: "Settings — HeightBoost" }] }),
+  head: () => ({ meta: [{ title: "الإعدادات — HeightBoost" }] }),
 });
 
 function SettingsPage() {
-  const { t, i18n } = useTranslation();
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const items = [
-    { label: "Notifications" },
-    { label: "Support" },
-    { label: "Feedback" },
-    { label: "Bug Report" },
-    { label: "Privacy" },
-    { label: "Terms" },
+    { label: "الإشعارات" },
+    { label: "الدعم" },
+    { label: "ملاحظاتك" },
+    { label: "الإبلاغ عن مشكلة" },
+    { label: "الخصوصية" },
+    { label: "الشروط" },
   ];
 
   const reset = () => {
-    if (confirm("Reset profile? This will erase all your data.")) {
+    if (confirm("إعادة تعيين الملف؟ سيتم مسح جميع بياناتك.")) {
       clearProfile();
       navigate({ to: "/" });
     }
   };
-
-  const language = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
-  const toggleLang = () => setAppLanguage(language === "ar" ? "en" : "ar");
 
   return (
     <main className="min-h-screen bg-background pb-12">
@@ -46,17 +42,6 @@ function SettingsPage() {
         </div>
 
         <ul className="mt-6 overflow-hidden rounded-2xl border border-border bg-card divide-y divide-border">
-          <li>
-            <button
-              onClick={toggleLang}
-              className="flex w-full items-center justify-between px-5 py-4 text-start transition-smooth hover:bg-muted"
-            >
-              <span className="text-sm font-medium text-foreground">Language</span>
-              <span className="text-sm text-muted-foreground">
-                {language === "ar" ? "العربية" : "English"}
-              </span>
-            </button>
-          </li>
           {items.map((item) => (
             <li key={item.label}>
               <button className="flex w-full items-center justify-between px-5 py-4 text-start transition-smooth hover:bg-muted">
@@ -71,7 +56,7 @@ function SettingsPage() {
           onClick={reset}
           className="mt-6 w-full rounded-2xl border border-destructive/40 bg-destructive/10 py-4 text-sm font-semibold text-destructive transition-smooth hover:bg-destructive/20"
         >
-          Reset Profile & Delete Data
+          إعادة تعيين الملف وحذف البيانات
         </button>
       </div>
     </main>
