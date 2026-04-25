@@ -1,15 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { useTranslation } from "react-i18next";
-import { Home as HomeIcon, Apple, Sparkles, MessageCircle } from "lucide-react";
+import { Home as HomeIcon, Apple, Sparkles } from "lucide-react";
 
 type Tab = "home" | "free" | "premium" | "ai";
 
 export function BottomTabs({ active }: { active: Tab }) {
-  const { t } = useTranslation();
   const tabs = [
-    { id: "home" as const, label: t("tabs.home"), icon: HomeIcon, to: "/home" as const },
-    { id: "free" as const, label: t("tabs.free"), icon: Apple, to: "/plan" as const },
-    { id: "premium" as const, label: t("tabs.premium"), icon: Sparkles, to: "/paywall" as const },
+    { id: "home" as const, label: "الرئيسية", icon: HomeIcon, to: "/home" as const },
+    { id: "free" as const, label: "خطتي", icon: Apple, to: "/plan" as const },
+    { id: "ai" as const, label: "برو AI", icon: Sparkles, to: "/pro" as const },
   ];
   return (
     <nav className="fixed bottom-0 inset-x-0 z-20 border-t border-border bg-card/90 backdrop-blur-xl">
@@ -30,17 +28,6 @@ export function BottomTabs({ active }: { active: Tab }) {
             </Link>
           );
         })}
-        <button
-          type="button"
-          disabled
-          aria-label={t("comingSoon")}
-          className={`flex flex-1 flex-col items-center gap-1 rounded-xl py-2 transition-smooth ${
-            active === "ai" ? "text-primary" : "text-muted-foreground/50"
-          }`}
-        >
-          <MessageCircle className="h-5 w-5" />
-          <span className="text-[10px] font-medium">{t("tabs.ai")}</span>
-        </button>
       </div>
     </nav>
   );
