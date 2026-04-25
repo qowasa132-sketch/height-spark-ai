@@ -12,6 +12,7 @@ import {
 } from "@/lib/dailyLog";
 import { ExerciseSection } from "@/components/plan/ExerciseSection";
 import { NutritionSection } from "@/components/plan/NutritionSection";
+import { RecipesSection } from "@/components/plan/RecipesSection";
 import { SleepSection } from "@/components/plan/SleepSection";
 import { HabitsSection } from "@/components/plan/HabitsSection";
 import { RemindersDrawer } from "@/components/plan/RemindersDrawer";
@@ -109,6 +110,7 @@ function PlanPage() {
 
         <ExerciseSection log={log} update={update} />
         <NutritionSection log={log} update={update} />
+        <RecipesSection log={log} update={update} />
         <SleepSection log={log} update={update} />
         <HabitsSection log={log} update={update} />
       </div>
