@@ -23,7 +23,7 @@ export const en = {
     of: "of",
   },
   welcome: {
-    title: "HeightBoost AI",
+    title: "HeightBoost",
     subtitle: "Discover your true height potential with science-backed analysis.",
     cta: "Start Free Analysis",
     privacy: "100% private. No account needed.",
