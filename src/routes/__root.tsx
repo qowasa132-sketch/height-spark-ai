@@ -1,5 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { Toaster } from "@/components/ui/sonner";
 import i18n, { normalizeLanguage, setAppLanguage } from "@/lib/i18n";
 
 import appCss from "../styles.css?url";
@@ -48,7 +49,7 @@ export const Route = createRootRoute({
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="ar" dir="rtl" className="dark">
       <head>
         <HeadContent />
       </head>
@@ -64,5 +65,10 @@ function RootComponent() {
   useEffect(() => {
     setAppLanguage(normalizeLanguage(localStorage.getItem("hb_lang") || i18n.language));
   }, []);
-  return <Outlet />;
+  return (
+    <>
+      <Outlet />
+      <Toaster position="top-center" richColors />
+    </>
+  );
 }
