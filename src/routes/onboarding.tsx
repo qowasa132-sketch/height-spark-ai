@@ -16,7 +16,7 @@ export const Route = createFileRoute("/onboarding")({
   head: () => ({ meta: [{ title: "Onboarding — HeightBoost" }] }),
 });
 
-const TOTAL_STEPS = 16;
+const TOTAL_STEPS = 15;
 
 function Onboarding() {
   const { t } = useTranslation();
@@ -136,36 +136,13 @@ function Step({
       );
     case 3:
       return (
-        <OnboardingStep
-          title={t("onboarding.ethnicity.title")}
-          subtitle={t("onboarding.ethnicity.subtitle")}
-          canContinue={!!profile.ethnicity}
-          onNext={onNext}
-        >
-          <ChoiceList
-            value={profile.ethnicity}
-            onChange={(v) => update({ ethnicity: v as Profile["ethnicity"] })}
-            options={[
-              { value: "asian", label: t("onboarding.ethnicity.asian") },
-              { value: "black", label: t("onboarding.ethnicity.black") },
-              { value: "caucasian", label: t("onboarding.ethnicity.caucasian") },
-              { value: "hispanic", label: t("onboarding.ethnicity.hispanic") },
-              { value: "middleEastern", label: t("onboarding.ethnicity.middleEastern") },
-              { value: "mixed", label: t("onboarding.ethnicity.mixed") },
-              { value: "other", label: t("onboarding.ethnicity.other") },
-            ]}
-          />
-        </OnboardingStep>
+        <HeightWeightStep profile={profile} update={update} onNext={onNext} />
       );
     case 4:
       return (
-        <HeightWeightStep profile={profile} update={update} onNext={onNext} />
-      );
-    case 5:
-      return (
         <ParentsStep profile={profile} update={update} onNext={onNext} />
       );
-    case 6:
+    case 5:
       return (
         <OnboardingStep
           title={t("onboarding.foot.title")}
@@ -182,7 +159,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 7:
+    case 6:
       return (
         <EducationalStep
           title={t("onboarding.education.title")}
@@ -192,7 +169,7 @@ function Step({
           icon="🧬"
         />
       );
-    case 8:
+    case 7:
       return (
         <OnboardingStep
           title={t("onboarding.workout.title")}
@@ -212,7 +189,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 9:
+    case 8:
       return (
         <OnboardingStep
           title={t("onboarding.facialHair.title")}
@@ -233,7 +210,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 10:
+    case 9:
       return (
         <OnboardingStep
           title={t("onboarding.acne.title")}
@@ -252,7 +229,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 11:
+    case 10:
       return (
         <OnboardingStep
           title={t("onboarding.underarm.title")}
@@ -270,7 +247,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 12:
+    case 11:
       return (
         <OnboardingStep
           title={t("onboarding.sleep.title")}
@@ -287,7 +264,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 13:
+    case 12:
       return (
         <OnboardingStep
           title={t("onboarding.dream.title")}
@@ -304,7 +281,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 14:
+    case 13:
       return (
         <EducationalStep
           title={t("onboarding.accuracy.title")}
@@ -314,9 +291,9 @@ function Step({
           icon="🎯"
         />
       );
-    case 15:
+    case 14:
       return <CostStep onNext={onNext} />;
-    case 16:
+    case 15:
       return (
         <EducationalStep
           title={t("onboarding.final.title")}
