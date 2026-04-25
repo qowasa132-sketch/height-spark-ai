@@ -19,34 +19,41 @@ function LangToggle() {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const language = normalizeLanguage(i.resolvedLanguage || i.language);
+  const language = mounted ? normalizeLanguage(i.resolvedLanguage || i.language) : "en";
   const targetLanguage = language === "ar" ? "en" : "ar";
   const label = targetLanguage === "ar" ? "العربية" : "English";
 
   return (
     <button
       type="button"
-      suppressHydrationWarning
-      aria-label={targetLanguage === "ar" ? "Switch to Arabic" : "Switch to English"}
-      onClick={() => setAppLanguage(targetLanguage)}
-      className="absolute top-6 end-6 rounded-full border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground backdrop-blur-md transition-smooth hover:bg-card"
+      aria-label="Change language"
+      onClick={() => setAppLanguage(normalizeLanguage(i.resolvedLanguage || i.language) === "ar" ? "en" : "ar")}
+      className="absolute top-6 end-6 min-w-24 rounded-full border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground backdrop-blur-md transition-smooth hover:bg-card"
     >
-      <span suppressHydrationWarning>{mounted ? label : "\u00a0"}</span>
+      {mounted ? label : "العربية"}
     </button>
   );
 }
 
 function Welcome() {
   const { t, i18n: i } = useTranslation();
-  const [, setTick] = useState(0);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const storedLanguage = normalizeLanguage(localStorage.getItem("hb_lang") || i18n.language);
     setAppLanguage(storedLanguage);
-    const onChange = () => setTick((n) => n + 1);
+    const onChange = () => setMounted(true);
     i.on("languageChanged", onChange);
     return () => i.off("languageChanged", onChange);
   }, [i]);
+
+  const title = mounted ? t("welcome.title") : "HeightBoost";
+  const subtitle = mounted
+    ? t("welcome.subtitle")
+    : "Discover your true height potential with science-backed analysis.";
+  const cta = mounted ? t("welcome.cta") : "Start Free Analysis";
+  const privacy = mounted ? t("welcome.privacy") : "100% private. No account needed.";
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background" key={i.language}>
@@ -61,10 +68,10 @@ function Welcome() {
             className="h-32 w-32 rounded-3xl shadow-glow mb-8"
           />
           <h1 className="text-4xl font-bold tracking-tight text-foreground glow-text">
-            {t("welcome.title")}
+            {title}
           </h1>
           <p className="mt-4 text-base text-muted-foreground leading-relaxed max-w-xs">
-            {t("welcome.subtitle")}
+            {subtitle}
           </p>
         </div>
         <div className="w-full flex flex-col items-center gap-4">
@@ -72,9 +79,9 @@ function Welcome() {
             to="/onboarding"
             className="w-full rounded-2xl bg-gradient-primary py-4 text-center text-base font-semibold text-primary-foreground shadow-glow transition-smooth active:scale-[0.98]"
           >
-            {t("welcome.cta")}
+            {cta}
           </Link>
-          <p className="text-xs text-muted-foreground">{t("welcome.privacy")}</p>
+          <p className="text-xs text-muted-foreground">{privacy}</p>
         </div>
       </div>
     </main>
