@@ -1,7 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { useEffect } from "react";
-import "@/lib/i18n";
-import i18n, { applyDirection } from "@/lib/i18n";
+import i18n, { normalizeLanguage, setAppLanguage } from "@/lib/i18n";
 
 import appCss from "../styles.css?url";
 
@@ -63,7 +62,7 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   useEffect(() => {
-    applyDirection(i18n.language);
+    setAppLanguage(normalizeLanguage(localStorage.getItem("hb_lang") || i18n.language));
   }, []);
   return <Outlet />;
 }

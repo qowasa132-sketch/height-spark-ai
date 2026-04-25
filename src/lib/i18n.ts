@@ -1,39 +1,41 @@
 import i18n from "i18next";
 import { initReactI18next } from "react-i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 import { en } from "./locales/en";
 import { ar } from "./locales/ar";
 
+export type AppLanguage = "en" | "ar";
+
+export function normalizeLanguage(lng?: string | null): AppLanguage {
+  return lng?.toLowerCase().startsWith("ar") ? "ar" : "en";
+}
+
 if (!i18n.isInitialized) {
-  i18n
-    .use(LanguageDetector)
-    .use(initReactI18next)
-    .init({
-      resources: {
-        en: { translation: en },
-        ar: { translation: ar },
-      },
-      lng: typeof window !== "undefined" ? localStorage.getItem("hb_lang") || undefined : "en",
-      fallbackLng: "en",
-      supportedLngs: ["en", "ar"],
-      interpolation: { escapeValue: false },
-      react: { useSuspense: false },
-      detection: {
-        order: ["localStorage", "navigator"],
-        caches: ["localStorage"],
-        lookupLocalStorage: "hb_lang",
-      },
-    });
+  i18n.use(initReactI18next).init({
+    resources: {
+      en: { translation: en },
+      ar: { translation: ar },
+    },
+    lng: "en",
+    fallbackLng: "en",
+    supportedLngs: ["en", "ar"],
+    interpolation: { escapeValue: false },
+    react: { useSuspense: false },
+  });
 }
 
 export function applyDirection(lng: string) {
   if (typeof document === "undefined") return;
-  const dir = lng === "ar" ? "rtl" : "ltr";
-  document.documentElement.setAttribute("dir", dir);
-  document.documentElement.setAttribute("lang", lng);
+  const language = normalizeLanguage(lng);
+  document.documentElement.setAttribute("dir", language === "ar" ? "rtl" : "ltr");
+  document.documentElement.setAttribute("lang", language);
+}
+
+export async function setAppLanguage(lng: AppLanguage) {
+  if (typeof window !== "undefined") localStorage.setItem("hb_lang", lng);
+  applyDirection(lng);
+  await i18n.changeLanguage(lng);
 }
 
 i18n.on("languageChanged", applyDirection);
-if (typeof window !== "undefined") applyDirection(i18n.language);
 
 export default i18n;

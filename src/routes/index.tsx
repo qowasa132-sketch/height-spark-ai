@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import "@/lib/i18n";
+import i18n, { normalizeLanguage, setAppLanguage } from "@/lib/i18n";
 import appIcon from "@/assets/app-icon.webp";
 
 export const Route = createFileRoute("/")({
@@ -16,13 +16,15 @@ export const Route = createFileRoute("/")({
 
 function LangToggle() {
   const { i18n: i } = useTranslation();
-  const toggle = () => i.changeLanguage(i.language === "ar" ? "en" : "ar");
+  const language = normalizeLanguage(i.language);
+  const toggle = () => setAppLanguage(language === "ar" ? "en" : "ar");
   return (
     <button
+      type="button"
       onClick={toggle}
       className="absolute top-6 end-6 rounded-full border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground backdrop-blur-md transition-smooth hover:bg-card"
     >
-      {i.language === "ar" ? "English" : "العربية"}
+      {language === "ar" ? "English" : "العربية"}
     </button>
   );
 }
@@ -30,11 +32,15 @@ function LangToggle() {
 function Welcome() {
   const { t, i18n: i } = useTranslation();
   const [, setTick] = useState(0);
+
   useEffect(() => {
+    const storedLanguage = normalizeLanguage(localStorage.getItem("hb_lang") || i18n.language);
+    setAppLanguage(storedLanguage);
     const onChange = () => setTick((n) => n + 1);
     i.on("languageChanged", onChange);
     return () => i.off("languageChanged", onChange);
   }, [i]);
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-background" key={i.language}>
       <div className="absolute inset-0 bg-gradient-glow opacity-60 pointer-events-none" />
