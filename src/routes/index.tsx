@@ -16,15 +16,18 @@ export const Route = createFileRoute("/")({
 
 function LangToggle() {
   const { i18n: i } = useTranslation();
-  const language = normalizeLanguage(i.language);
-  const toggle = () => setAppLanguage(language === "ar" ? "en" : "ar");
+  const language = normalizeLanguage(i.resolvedLanguage || i.language);
+  const targetLanguage = language === "ar" ? "en" : "ar";
+  const label = targetLanguage === "ar" ? "العربية" : "English";
+
   return (
     <button
       type="button"
-      onClick={toggle}
+      aria-label={targetLanguage === "ar" ? "Switch to Arabic" : "Switch to English"}
+      onClick={() => setAppLanguage(targetLanguage)}
       className="absolute top-6 end-6 rounded-full border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground backdrop-blur-md transition-smooth hover:bg-card"
     >
-      {language === "ar" ? "English" : "العربية"}
+      {label}
     </button>
   );
 }
