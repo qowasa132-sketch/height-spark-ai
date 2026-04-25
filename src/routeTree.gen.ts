@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProRouteImport } from './routes/pro'
 import { Route as PlanRouteImport } from './routes/plan'
 import { Route as PaywallRouteImport } from './routes/paywall'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
@@ -26,6 +27,11 @@ const SettingsRoute = SettingsRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProRoute = ProRouteImport.update({
+  id: '/pro',
+  path: '/pro',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlanRoute = PlanRouteImport.update({
@@ -66,6 +72,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/paywall': typeof PaywallRoute
   '/plan': typeof PlanRoute
+  '/pro': typeof ProRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
 }
@@ -76,6 +83,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/paywall': typeof PaywallRoute
   '/plan': typeof PlanRoute
+  '/pro': typeof ProRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
 }
@@ -87,6 +95,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/paywall': typeof PaywallRoute
   '/plan': typeof PlanRoute
+  '/pro': typeof ProRoute
   '/profile': typeof ProfileRoute
   '/settings': typeof SettingsRoute
 }
@@ -99,6 +108,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/paywall'
     | '/plan'
+    | '/pro'
     | '/profile'
     | '/settings'
   fileRoutesByTo: FileRoutesByTo
@@ -109,6 +119,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/paywall'
     | '/plan'
+    | '/pro'
     | '/profile'
     | '/settings'
   id:
@@ -119,6 +130,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/paywall'
     | '/plan'
+    | '/pro'
     | '/profile'
     | '/settings'
   fileRoutesById: FileRoutesById
@@ -130,6 +142,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PaywallRoute: typeof PaywallRoute
   PlanRoute: typeof PlanRoute
+  ProRoute: typeof ProRoute
   ProfileRoute: typeof ProfileRoute
   SettingsRoute: typeof SettingsRoute
 }
@@ -148,6 +161,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pro': {
+      id: '/pro'
+      path: '/pro'
+      fullPath: '/pro'
+      preLoaderRoute: typeof ProRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/plan': {
@@ -202,9 +222,19 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PaywallRoute: PaywallRoute,
   PlanRoute: PlanRoute,
+  ProRoute: ProRoute,
   ProfileRoute: ProfileRoute,
   SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
