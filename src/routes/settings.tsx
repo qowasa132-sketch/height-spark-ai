@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { ChevronLeft } from "lucide-react";
 import { clearProfile } from "@/lib/profile";
+import { normalizeLanguage, setAppLanguage } from "@/lib/i18n";
 
 export const Route = createFileRoute("/settings")({
   component: SettingsPage,
@@ -28,7 +29,8 @@ function SettingsPage() {
     }
   };
 
-  const toggleLang = () => i18n.changeLanguage(i18n.language === "ar" ? "en" : "ar");
+  const language = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
+  const toggleLang = () => setAppLanguage(language === "ar" ? "en" : "ar");
 
   return (
     <main className="min-h-screen bg-background pb-12">
@@ -51,7 +53,7 @@ function SettingsPage() {
             >
               <span className="text-sm font-medium text-foreground">Language</span>
               <span className="text-sm text-muted-foreground">
-                {i18n.language === "ar" ? "العربية" : "English"}
+                {language === "ar" ? "العربية" : "English"}
               </span>
             </button>
           </li>
