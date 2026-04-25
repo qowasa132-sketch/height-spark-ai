@@ -159,7 +159,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 7:
+    case 6:
       return (
         <EducationalStep
           title={t("onboarding.education.title")}
@@ -169,7 +169,7 @@ function Step({
           icon="🧬"
         />
       );
-    case 8:
+    case 7:
       return (
         <OnboardingStep
           title={t("onboarding.workout.title")}
@@ -189,7 +189,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 9:
+    case 8:
       return (
         <OnboardingStep
           title={t("onboarding.facialHair.title")}
@@ -210,7 +210,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 10:
+    case 9:
       return (
         <OnboardingStep
           title={t("onboarding.acne.title")}
@@ -229,7 +229,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 11:
+    case 10:
       return (
         <OnboardingStep
           title={t("onboarding.underarm.title")}
@@ -247,7 +247,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 12:
+    case 11:
       return (
         <OnboardingStep
           title={t("onboarding.sleep.title")}
@@ -264,7 +264,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 13:
+    case 12:
       return (
         <OnboardingStep
           title={t("onboarding.dream.title")}
@@ -281,7 +281,7 @@ function Step({
           />
         </OnboardingStep>
       );
-    case 14:
+    case 13:
       return (
         <EducationalStep
           title={t("onboarding.accuracy.title")}
@@ -291,9 +291,9 @@ function Step({
           icon="🎯"
         />
       );
-    case 15:
+    case 14:
       return <CostStep onNext={onNext} />;
-    case 16:
+    case 15:
       return (
         <EducationalStep
           title={t("onboarding.final.title")}
