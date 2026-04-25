@@ -1,64 +1,33 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useEffect, useState } from "react";
-import i18n, { normalizeLanguage, setAppLanguage } from "@/lib/i18n";
+import { useEffect } from "react";
+import { setAppLanguage } from "@/lib/i18n";
 import appIcon from "@/assets/app-icon.webp";
 
 export const Route = createFileRoute("/")({
   component: Welcome,
   head: () => ({
     meta: [
-      { title: "HeightBoost — Unlock Your Height Potential" },
-      { name: "description", content: "Science-backed height prediction and a personalized growth plan. Private, no account needed." },
+      { title: "HeightBoost — اكتشف إمكانات طولك" },
+      { name: "description", content: "توقع علمي لطولك وخطة نمو شخصية. خصوصية كاملة، لا حاجة لحساب." },
     ],
   }),
 });
 
-function LangToggle() {
-  const { i18n: i } = useTranslation();
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => setMounted(true), []);
-
-  const language = mounted ? normalizeLanguage(i.resolvedLanguage || i.language) : "en";
-  const targetLanguage = language === "ar" ? "en" : "ar";
-  const label = targetLanguage === "ar" ? "العربية" : "English";
-
-  return (
-    <button
-      type="button"
-      aria-label="Change language"
-      onClick={() => setAppLanguage(normalizeLanguage(i.resolvedLanguage || i.language) === "ar" ? "en" : "ar")}
-      className="absolute top-6 end-6 min-w-24 rounded-full border border-border bg-card/60 px-4 py-2 text-xs font-medium text-foreground backdrop-blur-md transition-smooth hover:bg-card"
-    >
-      {mounted ? label : "العربية"}
-    </button>
-  );
-}
-
 function Welcome() {
-  const { t, i18n: i } = useTranslation();
-  const [mounted, setMounted] = useState(false);
+  const { t } = useTranslation();
 
   useEffect(() => {
-    setMounted(true);
-    const storedLanguage = normalizeLanguage(localStorage.getItem("hb_lang") || i18n.language);
-    setAppLanguage(storedLanguage);
-    const onChange = () => setMounted(true);
-    i.on("languageChanged", onChange);
-    return () => i.off("languageChanged", onChange);
-  }, [i]);
+    setAppLanguage("ar");
+  }, []);
 
-  const title = mounted ? t("welcome.title") : "HeightBoost";
-  const subtitle = mounted
-    ? t("welcome.subtitle")
-    : "Discover your true height potential with science-backed analysis.";
-  const cta = mounted ? t("welcome.cta") : "Start Free Analysis";
-  const privacy = mounted ? t("welcome.privacy") : "100% private. No account needed.";
+  const subtitle = t("welcome.subtitle");
+  const cta = t("welcome.cta");
+  const privacy = t("welcome.privacy");
 
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background" key={i.language}>
+    <main className="relative min-h-screen overflow-hidden bg-background">
       <div className="absolute inset-0 bg-gradient-glow opacity-60 pointer-events-none" />
-      <LangToggle />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-md flex-col items-center justify-between px-6 py-16">
         <div />
         <div className="flex flex-col items-center text-center animate-[fade-in_0.6s_ease-out]">
