@@ -9,6 +9,8 @@ interface Exercise {
   category: "posture" | "stretch";
   durationSec: number;
   description: string;
+  // YouTube video ID for embed
+  videoId: string;
   steps: string[];
 }
 
@@ -20,6 +22,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 60,
     description: "يصحّح انحناء الكتفين ويستقيم العمود الفقري.",
+    videoId: "1V05_TpqKxQ",
     steps: [
       "قف وظهرك ملتصق بالجدار، قدماك على بُعد ١٥ سم منه.",
       "ارفع ذراعيك على شكل حرف Y مع لمس الجدار.",
@@ -33,6 +36,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 45,
     description: "يصحّح وضعية الرأس الأمامية ويُطيل الرقبة.",
+    videoId: "M_oa2Bn5gbo",
     steps: [
       "اجلس باستقامة وانظر للأمام.",
       "اسحب ذقنك للخلف كأنك تصنع ذقناً مزدوجة.",
@@ -46,6 +50,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 90,
     description: "يحسّن مرونة العمود الفقري بكامل امتداده.",
+    videoId: "kqnua4rHVVA",
     steps: [
       "ابدأ على الأربع، اليدين تحت الكتفين والركبتين تحت الوركين.",
       "استنشق وانزل البطن واسحب الرأس لأعلى (بقرة).",
@@ -60,6 +65,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يفك ضغط العمود الفقري ويزيد المسافة بين الفقرات.",
+    videoId: "0aoIVvaC2nA",
     steps: [
       "أمسك بار العقلة بقبضة عريضة قليلاً.",
       "علّق بثقل جسمك مع استرخاء الكتفين.",
@@ -73,6 +79,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يطيل الجزء الأمامي من الجذع ويُحسّن مرونة الظهر.",
+    videoId: "JDcdhTuycOI",
     steps: [
       "استلقِ على بطنك واليدين تحت الكتفين.",
       "ادفع جذعك لأعلى مع إبقاء الحوض على الأرض.",
@@ -86,6 +93,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يُريح أسفل الظهر والوركين.",
+    videoId: "kH2TY3UFkUE",
     steps: [
       "اجلس على ركبتيك واجعل قدميك متلامستين.",
       "انحنِ للأمام بذراعين ممدودتين.",
@@ -100,7 +108,7 @@ interface Props {
   update: (patch: Partial<DailyLog>) => void;
 }
 
-const GOAL = 3; // workouts per day
+const GOAL = 3;
 
 export function ExerciseSection({ log, update }: Props) {
   const [active, setActive] = useState<Exercise | null>(null);
@@ -110,8 +118,7 @@ export function ExerciseSection({ log, update }: Props) {
   const toggleDone = (id: string) => {
     const has = log.workoutsDone.includes(id);
     const workoutsDone = has ? log.workoutsDone.filter((x) => x !== id) : [...log.workoutsDone, id];
-    // each workout ≈ 15 minutes of sport
-    const sportMinutes = Math.max(0, Math.min(180, (workoutsDone.length) * 15));
+    const sportMinutes = Math.max(0, Math.min(180, workoutsDone.length * 15));
     update({ workoutsDone, sportMinutes });
   };
 
@@ -149,6 +156,20 @@ export function ExerciseSection({ log, update }: Props) {
               >
                 {isDone && <Check className="h-4 w-4" strokeWidth={3} />}
               </button>
+              <button
+                type="button"
+                onClick={() => setActive(ex)}
+                className="relative flex h-12 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black"
+                aria-label="معاينة"
+              >
+                <img
+                  src={`https://i.ytimg.com/vi/${ex.videoId}/mqdefault.jpg`}
+                  alt=""
+                  className="h-full w-full object-cover opacity-80"
+                  loading="lazy"
+                />
+                <Play className="absolute h-4 w-4 text-white drop-shadow" fill="white" />
+              </button>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-semibold text-foreground">{ex.name}</span>
@@ -158,23 +179,21 @@ export function ExerciseSection({ log, update }: Props) {
                 </div>
                 <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{ex.description}</p>
               </div>
-              <button
-                type="button"
-                onClick={() => setActive(ex)}
-                className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary transition-smooth hover:bg-primary/25"
-                aria-label="عرض"
-              >
-                <Play className="h-3.5 w-3.5" />
-              </button>
             </div>
           );
         })}
       </div>
 
-      {active && <ExerciseModal exercise={active} onClose={() => setActive(null)} onComplete={() => {
-        if (!log.workoutsDone.includes(active.id)) toggleDone(active.id);
-        setActive(null);
-      }} />}
+      {active && (
+        <ExerciseModal
+          exercise={active}
+          onClose={() => setActive(null)}
+          onComplete={() => {
+            if (!log.workoutsDone.includes(active.id)) toggleDone(active.id);
+            setActive(null);
+          }}
+        />
+      )}
     </SectionCard>
   );
 }
@@ -189,15 +208,18 @@ function ExerciseModal({
   onComplete: () => void;
 }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4" onClick={onClose}>
+    <div
+      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4"
+      onClick={onClose}
+    >
       <div
-        className="relative w-full max-w-md rounded-t-3xl border border-border bg-card p-6 shadow-glow sm:rounded-3xl"
+        className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-3xl border border-border bg-card p-6 shadow-glow sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           onClick={onClose}
-          className="absolute end-4 top-4 flex h-8 w-8 items-center justify-center rounded-full bg-muted text-foreground"
+          className="absolute end-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-muted text-foreground"
           aria-label="إغلاق"
         >
           <X className="h-4 w-4" />
@@ -205,11 +227,15 @@ function ExerciseModal({
         <h3 className="text-lg font-bold text-foreground">{exercise.name}</h3>
         <p className="mt-1 text-xs text-muted-foreground">{exercise.description}</p>
 
-        {/* Animated illustration */}
-        <div className="my-5 flex h-32 items-center justify-center rounded-2xl bg-primary/10">
-          <div className={`text-5xl ${exercise.category === "stretch" ? "animate-pulse" : "animate-bounce"}`}>
-            {exercise.category === "stretch" ? "🧘" : "🧍"}
-          </div>
+        {/* Real video */}
+        <div className="my-4 aspect-video w-full overflow-hidden rounded-2xl bg-black">
+          <iframe
+            className="h-full w-full"
+            src={`https://www.youtube-nocookie.com/embed/${exercise.videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
+            title={exercise.name}
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         </div>
 
         <ol className="space-y-2">
