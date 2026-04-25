@@ -13,9 +13,11 @@ if (!i18n.isInitialized) {
         en: { translation: en },
         ar: { translation: ar },
       },
+      lng: typeof window !== "undefined" ? localStorage.getItem("hb_lang") || undefined : "en",
       fallbackLng: "en",
       supportedLngs: ["en", "ar"],
       interpolation: { escapeValue: false },
+      react: { useSuspense: false },
       detection: {
         order: ["localStorage", "navigator"],
         caches: ["localStorage"],
