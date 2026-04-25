@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Apple, Search, Plus, Trash2, X, Camera, Droplets, Scale } from "lucide-react";
+import { Apple, Search, Plus, Trash2, X, Camera, Droplets, Scale, Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { SectionCard, ProgressBar, Stat } from "./SectionCard";
 import {
@@ -7,7 +7,8 @@ import {
   type FoodEntry,
   nutritionTotals,
 } from "@/lib/dailyLog";
-import { searchFoods, lookupBarcode, type FoodItem } from "@/lib/foodDb";
+import { lookupBarcode } from "@/lib/foodDb";
+import { lookupFoodAI, type AIFood } from "@/lib/aiFood";
 import { loadProfile, saveProfile } from "@/lib/profile";
 
 interface Props {
@@ -223,7 +224,7 @@ function BmiCard({ log }: { log: DailyLog }) {
   );
 }
 
-// ---------- Food search modal ----------
+// ---------- AI Food search modal ----------
 function FoodSearchModal({
   onClose,
   onAdd,
@@ -232,15 +233,33 @@ function FoodSearchModal({
   onAdd: (entry: FoodEntry) => void;
 }) {
   const [q, setQ] = useState("");
-  const [picked, setPicked] = useState<FoodItem | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  const [picked, setPicked] = useState<AIFood | null>(null);
   const [grams, setGrams] = useState(100);
-  const results = searchFoods(q);
+
+  const search = async () => {
+    const query = q.trim();
+    if (!query) return;
+    setLoading(true);
+    setErr(null);
+    try {
+      const food = await lookupFoodAI(query);
+      setPicked(food);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : "خطأ";
+      setErr(msg);
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const commit = () => {
     if (!picked) return;
     const factor = grams / 100;
     onAdd({
-      id: `${picked.id}-${Date.now()}`,
+      id: `ai-${Date.now()}`,
       name: picked.name,
       grams,
       calories: picked.caloriesPer100g * factor,
@@ -255,39 +274,46 @@ function FoodSearchModal({
     <ModalShell onClose={onClose} title="إضافة طعام">
       {!picked ? (
         <>
-          <div className="relative">
+          <div className="mb-3 flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-2 text-[11px] text-primary">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>مدعوم بالذكاء الاصطناعي — اكتب أي طعام تريده</span>
+          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              search();
+            }}
+            className="relative"
+          >
             <Search className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               autoFocus
               value={q}
               onChange={(e) => setQ(e.target.value)}
-              placeholder="ابحث عن طعام…"
+              placeholder="مثال: كبسة دجاج، شاورما، تفاح…"
               className="w-full rounded-2xl border border-border bg-background px-4 py-3 pe-10 text-sm text-foreground outline-none focus:border-primary"
             />
-          </div>
-          <ul className="mt-3 max-h-[55vh] space-y-1 overflow-y-auto">
-            {results.map((f) => (
-              <li key={f.id}>
-                <button
-                  type="button"
-                  onClick={() => setPicked(f)}
-                  className="flex w-full items-center justify-between rounded-xl border border-border bg-background/40 px-3 py-2.5 text-start transition-smooth hover:border-primary"
-                >
-                  <div>
-                    <div className="text-sm font-semibold text-foreground">{f.name}</div>
-                    <div className="text-[10px] text-muted-foreground">{f.nameEn}</div>
-                  </div>
-                  <div className="text-end text-[10px] text-muted-foreground">
-                    <div className="text-xs font-bold text-primary">{f.caloriesPer100g} سعرة</div>
-                    <div>لكل ١٠٠غ</div>
-                  </div>
-                </button>
-              </li>
-            ))}
-            {results.length === 0 && (
-              <li className="py-6 text-center text-xs text-muted-foreground">لا نتائج. جرّب مسح الباركود.</li>
+          </form>
+          <button
+            type="button"
+            onClick={search}
+            disabled={loading || !q.trim()}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-primary py-3 text-sm font-bold text-primary-foreground shadow-glow disabled:opacity-50"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin" /> جارٍ البحث…
+              </>
+            ) : (
+              <>
+                <Sparkles className="h-4 w-4" /> ابحث بالذكاء الاصطناعي
+              </>
             )}
-          </ul>
+          </button>
+          {err && <p className="mt-3 text-center text-xs text-destructive">{err}</p>}
+          <p className="mt-4 text-center text-[10px] text-muted-foreground">
+            يمكن البحث عن أي طعام حرفياً — أطباق عربية، عالمية، منتجات تجارية…
+          </p>
         </>
       ) : (
         <ServingPicker
