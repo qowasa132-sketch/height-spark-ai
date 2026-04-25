@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { useEffect } from "react";
-import i18n from "@/lib/i18n";
+import { useEffect, useState } from "react";
+import "@/lib/i18n";
 import appIcon from "@/assets/app-icon.webp";
 
 export const Route = createFileRoute("/")({
@@ -28,10 +28,15 @@ function LangToggle() {
 }
 
 function Welcome() {
-  const { t } = useTranslation();
-  useEffect(() => { i18n.language; }, []);
+  const { t, i18n: i } = useTranslation();
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    const onChange = () => setTick((n) => n + 1);
+    i.on("languageChanged", onChange);
+    return () => i.off("languageChanged", onChange);
+  }, [i]);
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background">
+    <main className="relative min-h-screen overflow-hidden bg-background" key={i.language}>
       <div className="absolute inset-0 bg-gradient-glow opacity-60 pointer-events-none" />
       <LangToggle />
       <div className="relative z-10 mx-auto flex min-h-screen max-w-md flex-col items-center justify-between px-6 py-16">
