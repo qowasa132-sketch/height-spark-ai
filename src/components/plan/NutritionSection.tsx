@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Apple, Search, Plus, Trash2, X, Camera, Droplets, Scale, Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { SectionCard, ProgressBar, Stat } from "./SectionCard";
+import { RewardGate } from "@/components/RewardGate";
 import {
   type DailyLog,
   type FoodEntry,
@@ -85,21 +86,23 @@ export function NutritionSection({ log, update }: Props) {
                     )}
                   </div>
                   <div className="flex items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setScannerOpen(meal)}
-                      className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-foreground"
-                      aria-label="مسح باركود"
-                    >
-                      <Camera className="h-3.5 w-3.5" />
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFoodOpen(meal)}
-                      className="flex items-center gap-1 rounded-full bg-gradient-primary px-2.5 py-1 text-[10px] font-bold text-primary-foreground shadow-glow"
-                    >
-                      <Plus className="h-3 w-3" /> إضافة
-                    </button>
+                    <RewardGate actionName="scan a barcode" onReward={() => setScannerOpen(meal)}>
+                      <button
+                        type="button"
+                        className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-foreground"
+                        aria-label="مسح باركود"
+                      >
+                        <Camera className="h-3.5 w-3.5" />
+                      </button>
+                    </RewardGate>
+                    <RewardGate actionName={`add food to ${MEAL_LABELS[meal]}`} onReward={() => setFoodOpen(meal)}>
+                      <button
+                        type="button"
+                        className="flex items-center gap-1 rounded-full bg-gradient-primary px-2.5 py-1 text-[10px] font-bold text-primary-foreground shadow-glow"
+                      >
+                        <Plus className="h-3 w-3" /> إضافة
+                      </button>
+                    </RewardGate>
                   </div>
                 </div>
                 {items.length > 0 ? (
@@ -181,13 +184,14 @@ export function NutritionSection({ log, update }: Props) {
         title="الوزن ومؤشر كتلة الجسم"
         hint="تتبّع أسبوعي يساعد في تقييم النمو"
         right={
-          <button
-            type="button"
-            onClick={() => setWeightOpen(true)}
-            className="flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-[10px] font-bold text-primary"
-          >
-            <Plus className="h-3 w-3" /> تسجيل
-          </button>
+          <RewardGate actionName="log your weight" onReward={() => setWeightOpen(true)}>
+            <button
+              type="button"
+              className="flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-[10px] font-bold text-primary"
+            >
+              <Plus className="h-3 w-3" /> تسجيل
+            </button>
+          </RewardGate>
         }
       >
         <BmiCard log={log} />
