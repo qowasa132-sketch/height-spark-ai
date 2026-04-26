@@ -11,7 +11,7 @@ import { WorkoutLibrary } from "@/components/pro/WorkoutLibrary";
 
 export const Route = createFileRoute("/pro")({
   component: ProPage,
-  head: () => ({ meta: [{ title: "برو AI — هايت بوست" }] }),
+  head: () => ({ meta: [{ title: "برو — هايت بوست" }] }),
 });
 
 function ProPage() {
@@ -33,7 +33,7 @@ function ProPage() {
       <main className="relative min-h-screen bg-background pb-24">
         <div className="absolute inset-x-0 top-0 h-72 bg-gradient-glow opacity-40 pointer-events-none" />
         <div className="relative mx-auto max-w-md px-5 pt-8">
-          <h1 className="text-2xl font-bold text-foreground glow-text">برو AI</h1>
+          <h1 className="text-2xl font-bold text-foreground glow-text">برو</h1>
           <p className="mt-1 text-sm text-muted-foreground">مميزات الذكاء الاصطناعي المتقدمة لتسريع نموك.</p>
 
           <div className="mt-8 space-y-3">
@@ -61,7 +61,7 @@ function ProPage() {
       <div className="absolute inset-x-0 top-0 h-72 bg-gradient-glow opacity-40 pointer-events-none" />
       <div className="relative mx-auto max-w-md px-5 pt-8">
         <div className="flex items-center gap-2">
-          <h1 className="text-2xl font-bold text-foreground glow-text">برو AI</h1>
+          <h1 className="text-2xl font-bold text-foreground glow-text">برو</h1>
           <span className="rounded-full bg-gradient-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground">PRO</span>
         </div>
         <p className="mt-1 text-sm text-muted-foreground">مميزات الذكاء الاصطناعي المخصصة لك.</p>
