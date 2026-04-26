@@ -193,8 +193,20 @@ export function NutritionSection({ log, update }: Props) {
         <BmiCard log={log} />
       </SectionCard>
 
-      {foodOpen && <FoodSearchModal onClose={() => setFoodOpen(false)} onAdd={addFood} />}
-      {scannerOpen && <BarcodeScannerModal onClose={() => setScannerOpen(false)} onAdd={addFood} />}
+      {foodOpen && (
+        <FoodSearchModal
+          meal={foodOpen}
+          onClose={() => setFoodOpen(null)}
+          onAdd={(e) => addFood({ ...e, meal: foodOpen })}
+        />
+      )}
+      {scannerOpen && (
+        <BarcodeScannerModal
+          meal={scannerOpen}
+          onClose={() => setScannerOpen(null)}
+          onAdd={(e) => addFood({ ...e, meal: scannerOpen })}
+        />
+      )}
       {weightOpen && <WeightModal log={log} update={update} onClose={() => setWeightOpen(false)} />}
     </>
   );
