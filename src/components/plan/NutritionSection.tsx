@@ -442,9 +442,11 @@ function ServingPicker({
 
 // ---------- Barcode scanner modal ----------
 function BarcodeScannerModal({
+  meal,
   onClose,
   onAdd,
 }: {
+  meal: MealType;
   onClose: () => void;
   onAdd: (entry: FoodEntry) => void;
 }) {
