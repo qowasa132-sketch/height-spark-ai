@@ -1,7 +1,7 @@
 // Advanced analytics: growth velocity chart + spurt alerts
 import { useMemo } from "react";
 import { TrendingUp, Zap, AlertCircle } from "lucide-react";
-import { loadMeasurements, type Measurement } from "@/lib/measurements";
+import { loadMeasurements, type MeasurementEntry } from "@/lib/measurements";
 
 interface VelocityPoint {
   dateLabel: string;
@@ -10,9 +10,10 @@ interface VelocityPoint {
   toCm: number;
 }
 
-function computeVelocity(entries: Measurement[]): VelocityPoint[] {
-  if (entries.length < 2) return [];
-  const sorted = [...entries].sort((a, b) => a.date.localeCompare(b.date));
+function computeVelocity(entries: MeasurementEntry[]): VelocityPoint[] {
+  const withHeight = entries.filter((e): e is MeasurementEntry & { heightCm: number } => typeof e.heightCm === "number");
+  if (withHeight.length < 2) return [];
+  const sorted = [...withHeight].sort((a, b) => a.date.localeCompare(b.date));
   const points: VelocityPoint[] = [];
   for (let i = 1; i < sorted.length; i++) {
     const prev = sorted[i - 1];
@@ -34,8 +35,9 @@ function computeVelocity(entries: Measurement[]): VelocityPoint[] {
 export function AdvancedAnalytics() {
   const entries = useMemo(() => loadMeasurements(), []);
   const velocity = useMemo(() => computeVelocity(entries), [entries]);
+  const heightCount = entries.filter((e) => typeof e.heightCm === "number").length;
 
-  if (entries.length < 2) {
+  if (heightCount < 2) {
     return (
       <p className="text-xs text-muted-foreground">
         أضف قياسين للطول على الأقل (بفارق أسبوع أو أكثر) من قسم القياسات في خطتي لرؤية تحليلك المتقدم.
