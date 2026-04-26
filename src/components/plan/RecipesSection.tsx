@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ChefHat, Clock, Users, X, Plus, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { SectionCard } from "./SectionCard";
+import { RewardGate } from "@/components/RewardGate";
 import { RECIPES, type Recipe } from "@/lib/recipes";
 import type { DailyLog, FoodEntry } from "@/lib/dailyLog";
 
@@ -37,22 +38,22 @@ export function RecipesSection({ log, update }: Props) {
       >
         <div className="grid grid-cols-2 gap-2">
           {RECIPES.map((r) => (
-            <button
-              key={r.id}
-              type="button"
-              onClick={() => setPicked(r)}
-              className="group relative flex flex-col items-start overflow-hidden rounded-2xl border border-border bg-background/50 p-3 text-start transition-smooth hover:border-primary/50 hover:bg-primary/5"
-            >
-              <div className="text-3xl">{r.emoji}</div>
-              <div className="mt-1.5 line-clamp-2 text-xs font-bold text-foreground">{r.name}</div>
-              <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
-                <span className="flex items-center gap-0.5">
-                  <Clock className="h-2.5 w-2.5" /> {r.time}
-                </span>
-                <span>·</span>
-                <span>{Math.round(r.nutrition.calciumMg)} مغ كالسيوم</span>
-              </div>
-            </button>
+            <RewardGate key={r.id} actionName={`view "${r.name}" recipe`} onReward={() => setPicked(r)}>
+              <button
+                type="button"
+                className="group relative flex flex-col items-start overflow-hidden rounded-2xl border border-border bg-background/50 p-3 text-start transition-smooth hover:border-primary/50 hover:bg-primary/5"
+              >
+                <div className="text-3xl">{r.emoji}</div>
+                <div className="mt-1.5 line-clamp-2 text-xs font-bold text-foreground">{r.name}</div>
+                <div className="mt-1 flex items-center gap-2 text-[10px] text-muted-foreground">
+                  <span className="flex items-center gap-0.5">
+                    <Clock className="h-2.5 w-2.5" /> {r.time}
+                  </span>
+                  <span>·</span>
+                  <span>{Math.round(r.nutrition.calciumMg)} مغ كالسيوم</span>
+                </div>
+              </button>
+            </RewardGate>
           ))}
         </div>
       </SectionCard>

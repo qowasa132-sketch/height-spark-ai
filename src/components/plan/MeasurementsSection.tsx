@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Ruler, Plus, TrendingUp, CalendarCheck } from "lucide-react";
 import { toast } from "sonner";
 import { SectionCard, Stat } from "./SectionCard";
+import { RewardGate } from "@/components/RewardGate";
 import {
   loadMeasurements,
   addMeasurement,
@@ -136,18 +137,19 @@ export function MeasurementsSection() {
             </div>
           )}
 
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className={`mt-3 flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
-              due
-                ? "bg-gradient-primary text-primary-foreground shadow-glow"
-                : "border border-border bg-background/40 text-foreground"
-            }`}
-          >
-            <Plus className="h-4 w-4" />
-            {entries.length === 0 ? "سجّل أول قياس" : due ? "أضف قياسات اليوم" : "إضافة قياس جديد"}
-          </button>
+          <RewardGate actionName="log your measurements" onReward={() => setOpen(true)}>
+            <button
+              type="button"
+              className={`mt-3 flex w-full items-center justify-center gap-2 rounded-2xl px-4 py-3 text-sm font-bold transition ${
+                due
+                  ? "bg-gradient-primary text-primary-foreground shadow-glow"
+                  : "border border-border bg-background/40 text-foreground"
+              }`}
+            >
+              <Plus className="h-4 w-4" />
+              {entries.length === 0 ? "سجّل أول قياس" : due ? "أضف قياسات اليوم" : "إضافة قياس جديد"}
+            </button>
+          </RewardGate>
         </>
       ) : (
         <div className="space-y-3">
