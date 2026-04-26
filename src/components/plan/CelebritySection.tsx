@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Share2, Sparkles, Shuffle } from "lucide-react";
+import { Share2, Sparkles, Shuffle, Star } from "lucide-react";
 import { toast } from "sonner";
 import { SectionCard } from "./SectionCard";
 import { loadProfile } from "@/lib/profile";
