@@ -21,15 +21,14 @@ function detectCurrency(): string {
 }
 
 export function formatPriceUSD(usd: number, locale?: string): string {
+  // Show the same numeric value in the user's local currency (no FX conversion).
   const ccy = detectCurrency();
-  const rate = RATES[ccy] ?? 1;
-  const amount = usd * rate;
   try {
     return new Intl.NumberFormat(locale || (typeof navigator !== "undefined" ? navigator.language : "en-US"), {
       style: "currency",
       currency: ccy,
-      maximumFractionDigits: amount >= 100 ? 0 : 2,
-    }).format(amount);
+      maximumFractionDigits: usd >= 100 ? 0 : 2,
+    }).format(usd);
   } catch {
     return `$${usd.toFixed(2)}`;
   }
