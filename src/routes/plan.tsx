@@ -111,7 +111,6 @@ function PlanPage() {
           </div>
         </div>
 
-        <MeasurementsSection />
         <NutritionSection log={log} update={update} />
         <ExerciseSection log={log} update={update} />
         <RecipesSection log={log} update={update} />
@@ -119,6 +118,7 @@ function PlanPage() {
         <HabitsSection log={log} update={update} />
         <CelebritySection />
         <FactsSection />
+        <MeasurementsSection />
       </div>
 
       <BottomTabs active="free" />
