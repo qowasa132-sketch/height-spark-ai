@@ -22,7 +22,7 @@ function Loading() {
         const next = p + 1.2;
         if (next >= 100) {
           clearInterval(interval);
-          setTimeout(() => navigate({ to: "/paywall" }), 300);
+          setTimeout(() => navigate({ to: "/home" }), 300);
           return 100;
         }
         if (next > 66) setStage(2);
