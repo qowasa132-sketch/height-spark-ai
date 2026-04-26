@@ -11,3 +11,6 @@ verify_jwt = false
 
 [functions.nutrition-plan]
 verify_jwt = false
+
+[functions.xray-bone-age]
+verify_jwt = false
