@@ -25,11 +25,13 @@ function Paywall() {
   const [profile, setProfile] = useState<Profile>({ unit: "metric" });
   const [prediction, setPrediction] = useState<Prediction | null>(null);
   const [selected, setSelected] = useState<Plan>("yearly");
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     const p = loadProfile();
     setProfile(p);
     setPrediction(predict(p));
+    setMounted(true);
   }, []);
 
   const handleSubscribe = () => {
