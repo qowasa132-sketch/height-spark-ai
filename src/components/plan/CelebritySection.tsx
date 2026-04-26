@@ -66,7 +66,13 @@ export function CelebritySection() {
 
   if (heightCm == null) {
     return (
-      <SectionCard title="توأم طولك من المشاهير" subtitle="أضف طولك في إعدادات الملف الشخصي لرؤية الميزة." />
+      <SectionCard
+        icon={<Star className="h-5 w-5" />}
+        title="توأم طولك من المشاهير"
+        hint="أضف طولك في إعدادات الملف الشخصي لرؤية الميزة."
+      >
+        <div />
+      </SectionCard>
     );
   }
 
@@ -74,9 +80,10 @@ export function CelebritySection() {
 
   return (
     <SectionCard
+      icon={<Star className="h-5 w-5" />}
       title="توأم طولك من المشاهير"
-      subtitle="شاركها على ستوري وتحدّى أصدقائك"
-      action={
+      hint="شاركها على ستوري وتحدّى أصدقائك"
+      right={
         <button
           type="button"
           onClick={handleShuffle}
