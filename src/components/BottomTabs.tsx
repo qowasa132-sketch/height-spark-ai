@@ -7,7 +7,7 @@ export function BottomTabs({ active }: { active: Tab }) {
   const tabs = [
     { id: "home" as const, label: "الرئيسية", icon: HomeIcon, to: "/home" as const },
     { id: "free" as const, label: "خطتي", icon: Apple, to: "/plan" as const },
-    { id: "ai" as const, label: "برو AI", icon: Sparkles, to: "/pro" as const },
+    { id: "ai" as const, label: "برو", icon: Sparkles, to: "/pro" as const },
   ];
   return (
     <nav className="fixed bottom-0 inset-x-0 z-20 border-t border-border bg-card/90 backdrop-blur-xl">
