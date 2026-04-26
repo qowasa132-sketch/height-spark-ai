@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { Settings, User, Moon, Apple, Dumbbell, Sparkles } from "lucide-react";
+import { Settings, User, Moon, Apple, Dumbbell, Sparkles, Lock } from "lucide-react";
 import { loadProfile, type Profile } from "@/lib/profile";
 import { predict, cmToFtIn, type Prediction } from "@/lib/prediction";
 import { loadTodayLog, type DailyLog } from "@/lib/dailyLog";
@@ -72,13 +72,17 @@ function HomePage() {
           </Link>
         </div>
 
-        {/* Hero prediction */}
+        {/* Hero prediction — premium only */}
         {prediction && (
-          <section className="mt-8 rounded-3xl border border-primary/30 bg-card/80 p-6 backdrop-blur-md shadow-glow animate-[fade-in_0.5s_ease-out]">
+          <section className="relative mt-8 rounded-3xl border border-primary/30 bg-card/80 p-6 backdrop-blur-md shadow-glow animate-[fade-in_0.5s_ease-out]">
             <p className="text-center text-xs uppercase tracking-widest text-muted-foreground">
               {t("home.predicted")}
             </p>
-            <p className="mt-2 text-center text-6xl font-bold text-primary glow-text">
+            <p
+              className={`mt-2 text-center text-6xl font-bold text-primary glow-text ${
+                profile.isPremium ? "" : "blur-md select-none"
+              }`}
+            >
               {heightLabel(prediction.predictedCm)}
             </p>
             <div className="mt-6 flex items-center justify-between border-t border-border pt-4">
@@ -86,7 +90,11 @@ function HomePage() {
                 <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
                   {t("home.spurt")}
                 </p>
-                <p className="mt-1 text-2xl font-bold text-foreground">
+                <p
+                  className={`mt-1 text-2xl font-bold text-foreground ${
+                    profile.isPremium ? "" : "blur-sm select-none"
+                  }`}
+                >
                   {prediction.growthSpurtPct}%
                 </p>
               </div>
@@ -94,7 +102,11 @@ function HomePage() {
                 <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
                   مفتوح
                 </p>
-                <p className="mt-1 text-2xl font-bold text-primary">
+                <p
+                  className={`mt-1 text-2xl font-bold text-primary ${
+                    profile.isPremium ? "" : "blur-sm select-none"
+                  }`}
+                >
                   +{prediction.unlockedCm} سم
                 </p>
               </div>
@@ -102,9 +114,22 @@ function HomePage() {
             <div className="mt-4 h-2 overflow-hidden rounded-full bg-muted">
               <div
                 className="h-full bg-gradient-primary transition-all duration-1000"
-                style={{ width: `${prediction.growthSpurtPct}%` }}
+                style={{ width: `${profile.isPremium ? prediction.growthSpurtPct : 0}%` }}
               />
             </div>
+
+            {!profile.isPremium && (
+              <button
+                onClick={() => navigate({ to: "/paywall" })}
+                className="absolute inset-0 flex flex-col items-center justify-center gap-2 rounded-3xl bg-background/30 backdrop-blur-[2px] transition-smooth hover:bg-background/20"
+              >
+                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-primary shadow-glow">
+                  <Lock className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <p className="text-sm font-semibold text-foreground">افتح توقع الطول</p>
+                <p className="text-xs text-muted-foreground">اشترك في برو لرؤية النتائج</p>
+              </button>
+            )}
           </section>
         )}
 
