@@ -111,7 +111,6 @@ export const en = {
         "Daily exercise of the day",
         "Height-boosting recipes library",
         "Celebrity height comparisons",
-        "Bilingual support (EN / AR)",
       ],
       proTitle: "Pro Plan",
       proSubtitle: "Unlock your full growth potential",
