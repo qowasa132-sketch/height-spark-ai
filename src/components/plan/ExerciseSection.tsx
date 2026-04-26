@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Dumbbell, Play, Check, X } from "lucide-react";
 import { SectionCard, ProgressBar } from "./SectionCard";
+import { RewardGate } from "@/components/RewardGate";
 import type { DailyLog } from "@/lib/dailyLog";
 
 interface Exercise {
@@ -146,30 +147,32 @@ export function ExerciseSection({ log, update }: Props) {
                 isDone ? "border-primary bg-primary/10" : "border-border bg-background/40"
               }`}
             >
-              <button
-                type="button"
-                onClick={() => toggleDone(ex.id)}
-                aria-label={isDone ? "إلغاء" : "تم"}
-                className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 transition-smooth ${
-                  isDone ? "border-primary bg-primary text-primary-foreground" : "border-border"
-                }`}
-              >
-                {isDone && <Check className="h-4 w-4" strokeWidth={3} />}
-              </button>
-              <button
-                type="button"
-                onClick={() => setActive(ex)}
-                className="relative flex h-12 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black"
-                aria-label="معاينة"
-              >
-                <img
-                  src={`https://i.ytimg.com/vi/${ex.videoId}/mqdefault.jpg`}
-                  alt=""
-                  className="h-full w-full object-cover opacity-80"
-                  loading="lazy"
-                />
-                <Play className="absolute h-4 w-4 text-white drop-shadow" fill="white" />
-              </button>
+              <RewardGate actionName={`mark "${ex.name}" as done`} onReward={() => toggleDone(ex.id)}>
+                <button
+                  type="button"
+                  aria-label={isDone ? "إلغاء" : "تم"}
+                  className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 transition-smooth ${
+                    isDone ? "border-primary bg-primary text-primary-foreground" : "border-border"
+                  }`}
+                >
+                  {isDone && <Check className="h-4 w-4" strokeWidth={3} />}
+                </button>
+              </RewardGate>
+              <RewardGate actionName={`watch "${ex.name}" video`} onReward={() => setActive(ex)}>
+                <button
+                  type="button"
+                  className="relative flex h-12 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black"
+                  aria-label="معاينة"
+                >
+                  <img
+                    src={`https://i.ytimg.com/vi/${ex.videoId}/mqdefault.jpg`}
+                    alt=""
+                    className="h-full w-full object-cover opacity-80"
+                    loading="lazy"
+                  />
+                  <Play className="absolute h-4 w-4 text-white drop-shadow" fill="white" />
+                </button>
+              </RewardGate>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-1.5">
                   <span className="text-sm font-semibold text-foreground">{ex.name}</span>
