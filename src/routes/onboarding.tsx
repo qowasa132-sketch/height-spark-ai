@@ -10,13 +10,14 @@ import { HeightWeightStep } from "@/components/onboarding/HeightWeightStep";
 import { ParentsStep } from "@/components/onboarding/ParentsStep";
 import { EducationalStep } from "@/components/onboarding/EducationalStep";
 import { CostStep } from "@/components/onboarding/CostStep";
+import { PlansPreviewStep } from "@/components/onboarding/PlansPreviewStep";
 
 export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
   head: () => ({ meta: [{ title: "Onboarding — HeightBoost" }] }),
 });
 
-const TOTAL_STEPS = 15;
+const TOTAL_STEPS = 16;
 
 function Onboarding() {
   const { t } = useTranslation();
@@ -294,6 +295,8 @@ function Step({
     case 14:
       return <CostStep onNext={onNext} />;
     case 15:
+      return <PlansPreviewStep onNext={onNext} />;
+    case 16:
       return (
         <EducationalStep
           title={t("onboarding.final.title")}
