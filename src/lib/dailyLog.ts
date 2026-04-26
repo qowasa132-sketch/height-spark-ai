@@ -1,4 +1,22 @@
 // Daily habit log — local-storage keyed by YYYY-MM-DD. No accounts.
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
+
+export const MEAL_TYPES: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
+
+export const MEAL_LABELS: Record<MealType, string> = {
+  breakfast: "فطور",
+  lunch: "غداء",
+  dinner: "عشاء",
+  snack: "سناك",
+};
+
+export const MEAL_EMOJI: Record<MealType, string> = {
+  breakfast: "🌅",
+  lunch: "🍽️",
+  dinner: "🌙",
+  snack: "🍎",
+};
+
 export interface FoodEntry {
   id: string;
   name: string;
@@ -7,6 +25,7 @@ export interface FoodEntry {
   proteinG: number;
   calciumMg: number;
   vitaminDIu: number;
+  meal?: MealType;
 }
 
 export type HabitKey =
