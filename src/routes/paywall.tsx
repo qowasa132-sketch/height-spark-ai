@@ -85,7 +85,7 @@ function Paywall() {
           <PlanCard
             plan="yearly"
             label={t("paywall.yearly")}
-            price={`${formatPriceUSD(WEEKLY_USD.yearly, i18n.language)}${t("paywall.perWeek")}`}
+            price={mounted ? `${formatPriceUSD(WEEKLY_USD.yearly, i18n.language)}${t("paywall.perWeek")}` : ""}
             badge={t("paywall.specialOffer")}
             featured
             selected={selected === "yearly"}
@@ -94,14 +94,14 @@ function Paywall() {
           <PlanCard
             plan="monthly"
             label={t("paywall.monthly")}
-            price={`${formatPriceUSD(WEEKLY_USD.monthly, i18n.language)}${t("paywall.perWeek")}`}
+            price={mounted ? `${formatPriceUSD(WEEKLY_USD.monthly, i18n.language)}${t("paywall.perWeek")}` : ""}
             selected={selected === "monthly"}
             onSelect={() => setSelected("monthly")}
           />
           <PlanCard
             plan="weekly"
             label={t("paywall.weekly")}
-            price={formatPriceUSD(WEEKLY_USD.weekly, i18n.language)}
+            price={mounted ? formatPriceUSD(WEEKLY_USD.weekly, i18n.language) : ""}
             selected={selected === "weekly"}
             onSelect={() => setSelected("weekly")}
           />
