@@ -45,7 +45,8 @@ function ProPage() {
   useEffect(() => {
     const p = loadProfile();
     if (!p.completedAt) { navigate({ to: "/" }); return; }
-    setIsPremium(!!p.isPremium);
+    // Dev preview: unlock Pro automatically
+    setIsPremium(true);
     setMounted(true);
   }, [navigate]);
 
