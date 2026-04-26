@@ -311,7 +311,7 @@ function FoodSearchModal({
   };
 
   return (
-    <ModalShell onClose={onClose} title="إضافة طعام">
+    <ModalShell onClose={onClose} title={`إضافة طعام · ${MEAL_EMOJI[meal]} ${MEAL_LABELS[meal]}`}>
       {!picked ? (
         <>
           <div className="mb-3 flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-2 text-[11px] text-primary">
@@ -518,7 +518,7 @@ function BarcodeScannerModal({
   };
 
   return (
-    <ModalShell onClose={onClose} title="مسح الباركود">
+    <ModalShell onClose={onClose} title={`مسح الباركود · ${MEAL_EMOJI[meal]} ${MEAL_LABELS[meal]}`}>
       {!result ? (
         <>
           <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-black">
