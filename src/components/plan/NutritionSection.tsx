@@ -5,6 +5,10 @@ import { SectionCard, ProgressBar, Stat } from "./SectionCard";
 import {
   type DailyLog,
   type FoodEntry,
+  type MealType,
+  MEAL_TYPES,
+  MEAL_LABELS,
+  MEAL_EMOJI,
   nutritionTotals,
 } from "@/lib/dailyLog";
 import { lookupBarcode } from "@/lib/foodDb";
@@ -23,8 +27,8 @@ const GOAL_VIT_D = 600; // IU
 const GOAL_WATER = 2000; // ml
 
 export function NutritionSection({ log, update }: Props) {
-  const [foodOpen, setFoodOpen] = useState(false);
-  const [scannerOpen, setScannerOpen] = useState(false);
+  const [foodOpen, setFoodOpen] = useState<MealType | null>(null);
+  const [scannerOpen, setScannerOpen] = useState<MealType | null>(null);
   const [weightOpen, setWeightOpen] = useState(false);
 
   const totals = nutritionTotals(log);
@@ -63,50 +67,72 @@ export function NutritionSection({ log, update }: Props) {
           <MiniBar label="فيتامين د" value={totals.vitaminDIu} goal={GOAL_VIT_D} />
         </div>
 
-        {/* Add buttons */}
-        <div className="mt-4 grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => setFoodOpen(true)}
-            className="flex items-center justify-center gap-1.5 rounded-2xl bg-gradient-primary py-2.5 text-xs font-bold text-primary-foreground shadow-glow"
-          >
-            <Search className="h-3.5 w-3.5" /> إضافة بالكتابة
-          </button>
-          <button
-            type="button"
-            onClick={() => setScannerOpen(true)}
-            className="flex items-center justify-center gap-1.5 rounded-2xl border-2 border-primary/40 bg-card py-2.5 text-xs font-bold text-foreground"
-          >
-            <Camera className="h-3.5 w-3.5" /> مسح باركود
-          </button>
-        </div>
-
-        {/* Today's foods */}
-        {log.foods.length > 0 && (
-          <ul className="mt-4 space-y-1.5">
-            {log.foods.map((f) => (
-              <li
-                key={f.id}
-                className="flex items-center justify-between rounded-xl border border-border bg-background/40 px-3 py-2 text-xs"
-              >
-                <div className="min-w-0 flex-1">
-                  <div className="truncate font-semibold text-foreground">{f.name}</div>
-                  <div className="text-[10px] text-muted-foreground">
-                    {f.grams}غ · {Math.round(f.calories)} سعرة · {Math.round(f.proteinG)}غ بروتين
+        {/* Per-meal sections */}
+        <div className="mt-4 space-y-3">
+          {MEAL_TYPES.map((meal) => {
+            const items = log.foods.filter((f) => (f.meal ?? "snack") === meal);
+            const mealCals = items.reduce((s, i) => s + i.calories, 0);
+            return (
+              <div key={meal} className="rounded-2xl border border-border bg-background/40 p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-base">{MEAL_EMOJI[meal]}</span>
+                    <span className="text-sm font-bold text-foreground">{MEAL_LABELS[meal]}</span>
+                    {items.length > 0 && (
+                      <span className="text-[10px] text-muted-foreground">
+                        · {Math.round(mealCals)} سعرة
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setScannerOpen(meal)}
+                      className="flex h-7 w-7 items-center justify-center rounded-full border border-border bg-card text-foreground"
+                      aria-label="مسح باركود"
+                    >
+                      <Camera className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFoodOpen(meal)}
+                      className="flex items-center gap-1 rounded-full bg-gradient-primary px-2.5 py-1 text-[10px] font-bold text-primary-foreground shadow-glow"
+                    >
+                      <Plus className="h-3 w-3" /> إضافة
+                    </button>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => removeFood(f.id)}
-                  className="ms-2 flex h-7 w-7 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
-                  aria-label="حذف"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </button>
-              </li>
-            ))}
-          </ul>
-        )}
+                {items.length > 0 ? (
+                  <ul className="mt-2 space-y-1">
+                    {items.map((f) => (
+                      <li
+                        key={f.id}
+                        className="flex items-center justify-between rounded-xl border border-border bg-card/60 px-2.5 py-1.5 text-xs"
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className="truncate font-semibold text-foreground">{f.name}</div>
+                          <div className="text-[10px] text-muted-foreground">
+                            {f.grams}غ · {Math.round(f.calories)} سعرة · {Math.round(f.proteinG)}غ بروتين
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => removeFood(f.id)}
+                          className="ms-2 flex h-6 w-6 items-center justify-center rounded-full text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                          aria-label="حذف"
+                        >
+                          <Trash2 className="h-3 w-3" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="mt-1.5 text-[10px] text-muted-foreground">لم تضف أي طعام بعد</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </SectionCard>
 
       {/* Water */}
@@ -167,8 +193,20 @@ export function NutritionSection({ log, update }: Props) {
         <BmiCard log={log} />
       </SectionCard>
 
-      {foodOpen && <FoodSearchModal onClose={() => setFoodOpen(false)} onAdd={addFood} />}
-      {scannerOpen && <BarcodeScannerModal onClose={() => setScannerOpen(false)} onAdd={addFood} />}
+      {foodOpen && (
+        <FoodSearchModal
+          meal={foodOpen}
+          onClose={() => setFoodOpen(null)}
+          onAdd={(e) => addFood({ ...e, meal: foodOpen })}
+        />
+      )}
+      {scannerOpen && (
+        <BarcodeScannerModal
+          meal={scannerOpen}
+          onClose={() => setScannerOpen(null)}
+          onAdd={(e) => addFood({ ...e, meal: scannerOpen })}
+        />
+      )}
       {weightOpen && <WeightModal log={log} update={update} onClose={() => setWeightOpen(false)} />}
     </>
   );
@@ -226,9 +264,11 @@ function BmiCard({ log }: { log: DailyLog }) {
 
 // ---------- AI Food search modal ----------
 function FoodSearchModal({
+  meal,
   onClose,
   onAdd,
 }: {
+  meal: MealType;
   onClose: () => void;
   onAdd: (entry: FoodEntry) => void;
 }) {
@@ -271,7 +311,7 @@ function FoodSearchModal({
   };
 
   return (
-    <ModalShell onClose={onClose} title="إضافة طعام">
+    <ModalShell onClose={onClose} title={`إضافة طعام · ${MEAL_EMOJI[meal]} ${MEAL_LABELS[meal]}`}>
       {!picked ? (
         <>
           <div className="mb-3 flex items-center gap-1.5 rounded-xl bg-primary/10 px-3 py-2 text-[11px] text-primary">
@@ -402,9 +442,11 @@ function ServingPicker({
 
 // ---------- Barcode scanner modal ----------
 function BarcodeScannerModal({
+  meal,
   onClose,
   onAdd,
 }: {
+  meal: MealType;
   onClose: () => void;
   onAdd: (entry: FoodEntry) => void;
 }) {
@@ -476,7 +518,7 @@ function BarcodeScannerModal({
   };
 
   return (
-    <ModalShell onClose={onClose} title="مسح الباركود">
+    <ModalShell onClose={onClose} title={`مسح الباركود · ${MEAL_EMOJI[meal]} ${MEAL_LABELS[meal]}`}>
       {!result ? (
         <>
           <div className="relative aspect-square w-full overflow-hidden rounded-2xl bg-black">
