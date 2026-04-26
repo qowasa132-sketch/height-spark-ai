@@ -16,7 +16,7 @@ export const DEFAULT_SETTINGS: ReminderSettings = {
   bedtime: true,
   water: false,
   exercise: false,
-  measurements: false,
+  measurements: true,
 };
 
 export function loadReminderSettings(): ReminderSettings {

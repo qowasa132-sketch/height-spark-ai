@@ -17,6 +17,7 @@ import { SleepSection } from "@/components/plan/SleepSection";
 import { HabitsSection } from "@/components/plan/HabitsSection";
 import { FactsSection } from "@/components/plan/FactsSection";
 import { CelebritySection } from "@/components/plan/CelebritySection";
+import { MeasurementsSection } from "@/components/plan/MeasurementsSection";
 import { RemindersDrawer } from "@/components/plan/RemindersDrawer";
 import { BadgesDrawer } from "@/components/plan/BadgesDrawer";
 import { evaluateBadges, BADGES } from "@/lib/badges";
@@ -110,6 +111,7 @@ function PlanPage() {
           </div>
         </div>
 
+        <MeasurementsSection />
         <ExerciseSection log={log} update={update} />
         <NutritionSection log={log} update={update} />
         <RecipesSection log={log} update={update} />
