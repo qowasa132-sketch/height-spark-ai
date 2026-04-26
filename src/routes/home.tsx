@@ -120,20 +120,19 @@ function HomePage() {
           </div>
         </section>
 
-        {/* Premium teaser */}
+        {/* Premium teaser — Pro features still available via the Pro tab */}
         {!profile.isPremium && (
           <button
-            onClick={() => navigate({ to: "/paywall" })}
+            onClick={() => navigate({ to: "/pro" })}
             className="mt-6 flex w-full items-center gap-3 rounded-2xl border border-primary/40 bg-primary/5 p-4 text-start transition-smooth hover:bg-primary/10"
           >
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-primary">
               <Sparkles className="h-5 w-5 text-primary-foreground" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-foreground">افتح ميزات برو</p>
+              <p className="text-sm font-semibold text-foreground">جرّب ميزات برو</p>
               <p className="text-xs text-muted-foreground">تحليل القوام بالذكاء، خطط طعام، والمزيد</p>
             </div>
-            <Lock className="h-4 w-4 text-primary" />
           </button>
         )}
       </div>
