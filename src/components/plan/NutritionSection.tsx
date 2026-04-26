@@ -264,9 +264,11 @@ function BmiCard({ log }: { log: DailyLog }) {
 
 // ---------- AI Food search modal ----------
 function FoodSearchModal({
+  meal,
   onClose,
   onAdd,
 }: {
+  meal: MealType;
   onClose: () => void;
   onAdd: (entry: FoodEntry) => void;
 }) {
