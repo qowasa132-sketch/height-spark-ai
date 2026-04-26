@@ -106,7 +106,6 @@ export const en = {
       freeTitle: "Free Plan",
       freeSubtitle: "Everything you need to get started",
       freeFeatures: [
-        "Personalized height prediction (Khamis-Roche)",
         "Daily plan: sleep, nutrition & sport tracking",
         "Streak tracking & basic badges",
         "Daily exercise of the day",
@@ -117,6 +116,7 @@ export const en = {
       proTitle: "Pro Plan",
       proSubtitle: "Unlock your full growth potential",
       proFeatures: [
+        "📏 Personalized height prediction (Khamis-Roche)",
         "🦴 X-Ray bone-age AI analysis",
         "🧬 Genetics vs lifestyle report",
         "📐 3D posture analysis & correction",
