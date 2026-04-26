@@ -66,16 +66,18 @@ function Paywall() {
           </h1>
         </div>
 
-        {/* Prediction reveal */}
+        {/* Prediction reveal — locked teaser */}
         {prediction && (
           <div className="mt-8 grid grid-cols-2 gap-3 animate-[fade-in_0.6s_ease-out]">
             <Stat
               label={t("paywall.predicted")}
               value={heightLabel(prediction.predictedCm)}
+              locked
             />
             <Stat
               label={t("paywall.spurt")}
               value={`${prediction.growthSpurtPct}%`}
+              locked
             />
           </div>
         )}
