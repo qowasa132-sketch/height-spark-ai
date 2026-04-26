@@ -123,11 +123,23 @@ function Paywall() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Stat({ label, value, locked }: { label: string; value: string; locked?: boolean }) {
   return (
-    <div className="rounded-2xl border border-primary/30 bg-card/80 p-4 text-center backdrop-blur-md shadow-card">
+    <div className="relative overflow-hidden rounded-2xl border border-primary/30 bg-card/80 p-4 text-center backdrop-blur-md shadow-card">
       <p className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</p>
-      <p className="mt-1 text-2xl font-bold text-primary glow-text">{value}</p>
+      <p className={`mt-1 text-2xl font-bold text-primary glow-text ${locked ? "blur-md select-none" : ""}`}>
+        {value}
+      </p>
+      {locked && (
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-primary shadow-glow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="h-4 w-4 text-primary-foreground">
+              <rect x="5" y="11" width="14" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
