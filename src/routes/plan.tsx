@@ -112,8 +112,8 @@ function PlanPage() {
         </div>
 
         <MeasurementsSection />
-        <ExerciseSection log={log} update={update} />
         <NutritionSection log={log} update={update} />
+        <ExerciseSection log={log} update={update} />
         <RecipesSection log={log} update={update} />
         <SleepSection log={log} update={update} />
         <HabitsSection log={log} update={update} />
