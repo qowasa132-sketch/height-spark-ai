@@ -138,14 +138,15 @@ export function CelebritySection() {
           {match.fact}
         </p>
 
-        <button
-          type="button"
-          onClick={handleShare}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-smooth active:scale-[0.98]"
-        >
-          <Share2 className="h-4 w-4" />
-          شاركها على ستوري
-        </button>
+        <RewardGate actionName="share your celebrity twin" onReward={handleShare}>
+          <button
+            type="button"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-primary py-3 text-sm font-semibold text-primary-foreground shadow-glow transition-smooth active:scale-[0.98]"
+          >
+            <Share2 className="h-4 w-4" />
+            شاركها على ستوري
+          </button>
+        </RewardGate>
       </div>
 
       <p className="mt-3 text-center text-[11px] text-muted-foreground">
