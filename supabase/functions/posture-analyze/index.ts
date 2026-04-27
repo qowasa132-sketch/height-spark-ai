@@ -17,6 +17,17 @@ serve(async (req) => {
         status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    // Cap image data URL at ~7MB (covers ~5MB raw image base64-encoded)
+    if (imageDataUrl.length > 7_000_000) {
+      return new Response(JSON.stringify({ error: "الصورة كبيرة جداً (الحد ٥ ميغا)." }), {
+        status: 413, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!imageDataUrl.startsWith("data:image/")) {
+      return new Response(JSON.stringify({ error: "صيغة صورة غير صالحة" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!KEY) throw new Error("LOVABLE_API_KEY missing");
 
@@ -104,6 +115,6 @@ serve(async (req) => {
     return new Response(JSON.stringify(parsed), { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("posture-analyze error", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ error: "خطأ في الخادم" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

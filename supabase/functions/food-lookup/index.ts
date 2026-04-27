@@ -20,6 +20,13 @@ Deno.serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    const trimmedQuery = query.trim().slice(0, 200);
+    if (trimmedQuery.length < 1) {
+      return new Response(JSON.stringify({ error: "invalid query" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
 
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!LOVABLE_API_KEY) {
@@ -47,7 +54,7 @@ Deno.serve(async (req) => {
             },
             {
               role: "user",
-              content: `أعطني القيم الغذائية لـ "${query}" لكل ١٠٠ غرام.`,
+              content: `أعطني القيم الغذائية لـ "${trimmedQuery}" لكل ١٠٠ غرام.`,
             },
           ],
           tools: [
@@ -129,7 +136,7 @@ Deno.serve(async (req) => {
   } catch (e) {
     console.error("food-lookup error", e);
     return new Response(
-      JSON.stringify({ error: e instanceof Error ? e.message : "خطأ" }),
+      JSON.stringify({ error: "خطأ في الخادم" }),
       {
         status: 500,
         headers: { ...corsHeaders, "Content-Type": "application/json" },
