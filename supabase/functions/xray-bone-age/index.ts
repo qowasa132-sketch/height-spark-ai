@@ -18,6 +18,20 @@ serve(async (req) => {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
+    if (imageDataUrl.length > 7_000_000) {
+      return new Response(JSON.stringify({ error: "الصورة كبيرة جداً (الحد ٥ ميغا)." }), {
+        status: 413,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    if (!imageDataUrl.startsWith("data:image/")) {
+      return new Response(JSON.stringify({ error: "صيغة صورة غير صالحة" }), {
+        status: 400,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    const safeAge = typeof chronologicalAge === "number" && chronologicalAge > 0 && chronologicalAge < 120 ? chronologicalAge : null;
+    const safeGender = typeof gender === "string" ? gender.slice(0, 20) : null;
     const KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!KEY) throw new Error("LOVABLE_API_KEY missing");
 
@@ -87,8 +101,8 @@ serve(async (req) => {
 - أضف disclaimer واضح أن النتيجة تقديرية وليست تشخيصاً طبياً.`;
 
     const userText = `العمر الزمني للمستخدم: ${
-      chronologicalAge ?? "غير محدد"
-    } سنة. الجنس: ${gender ?? "غير محدد"}. حلّل الصورة وأعد التقرير عبر الأداة.`;
+      safeAge ?? "غير محدد"
+    } سنة. الجنس: ${safeGender ?? "غير محدد"}. حلّل الصورة وأعد التقرير عبر الأداة.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -140,7 +154,7 @@ serve(async (req) => {
     return new Response(args, { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("xray-bone-age error", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
+    return new Response(JSON.stringify({ error: "خطأ في الخادم" }), {
       status: 500,
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });

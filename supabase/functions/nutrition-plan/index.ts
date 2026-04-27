@@ -15,6 +15,9 @@ serve(async (req) => {
     const KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!KEY) throw new Error("LOVABLE_API_KEY missing");
 
+    // Cap free-text fields
+    const safePreferences = typeof preferences === "string" ? preferences.trim().slice(0, 500) : "";
+    const safeAllergies = typeof allergies === "string" ? allergies.trim().slice(0, 500) : "";
     const isSupp = mode === "supplements";
 
     const tools = isSupp
@@ -81,8 +84,8 @@ serve(async (req) => {
         }];
 
     const userPrompt = isSupp
-      ? `اقترح مكملات لشخص: عمر ${profile?.age ?? "؟"}، جنس ${profile?.gender ?? "؟"}، طول ${profile?.heightCm ?? "؟"} سم، نشاط ${profile?.workout ?? "؟"}، نوم ${profile?.sleepHours ?? "؟"} س. تفضيلات: ${preferences || "لا يوجد"}. حساسيات: ${allergies || "لا يوجد"}. ركّز على فيتامين D، الكالسيوم، الزنك، المغنيسيوم، البروتين.`
-      : `صمّم خطة وجبات يوم كامل لشخص: عمر ${profile?.age ?? "؟"}، جنس ${profile?.gender ?? "؟"}، طول ${profile?.heightCm ?? "؟"} سم، وزن ${profile?.weightKg ?? "؟"} كجم، نشاط ${profile?.workout ?? "؟"}. تفضيلات: ${preferences || "لا يوجد"}. حساسيات/استثناءات: ${allergies || "لا يوجد"}. ٤ وجبات (إفطار، خفيفة، غداء، عشاء)، أطعمة عربية مألوفة، عالية البروتين والكالسيوم وفيتامين D.`;
+      ? `اقترح مكملات لشخص: عمر ${profile?.age ?? "؟"}، جنس ${profile?.gender ?? "؟"}، طول ${profile?.heightCm ?? "؟"} سم، نشاط ${profile?.workout ?? "؟"}، نوم ${profile?.sleepHours ?? "؟"} س. تفضيلات: ${safePreferences || "لا يوجد"}. حساسيات: ${safeAllergies || "لا يوجد"}. ركّز على فيتامين D، الكالسيوم، الزنك، المغنيسيوم، البروتين.`
+      : `صمّم خطة وجبات يوم كامل لشخص: عمر ${profile?.age ?? "؟"}، جنس ${profile?.gender ?? "؟"}، طول ${profile?.heightCm ?? "؟"} سم، وزن ${profile?.weightKg ?? "؟"} كجم، نشاط ${profile?.workout ?? "؟"}. تفضيلات: ${safePreferences || "لا يوجد"}. حساسيات/استثناءات: ${safeAllergies || "لا يوجد"}. ٤ وجبات (إفطار، خفيفة، غداء، عشاء)، أطعمة عربية مألوفة، عالية البروتين والكالسيوم وفيتامين D.`;
 
     const resp = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
       method: "POST",
@@ -112,6 +115,6 @@ serve(async (req) => {
     return new Response(args, { headers: { ...corsHeaders, "Content-Type": "application/json" } });
   } catch (e) {
     console.error("nutrition-plan error", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+    return new Response(JSON.stringify({ error: "خطأ في الخادم" }), { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } });
   }
 });

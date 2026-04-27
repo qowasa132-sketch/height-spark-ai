@@ -23,6 +23,21 @@ serve(async (req) => {
 
   try {
     const { messages, profile } = await req.json();
+    if (!Array.isArray(messages)) {
+      return new Response(JSON.stringify({ error: "messages مطلوبة" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    // Cap to last 20 messages, each content max 4000 chars
+    const safeMessages = messages.slice(-20).map((m: any) => ({
+      role: typeof m?.role === "string" ? m.role : "user",
+      content: typeof m?.content === "string" ? m.content.slice(0, 4000) : "",
+    })).filter((m) => m.content.length > 0);
+    if (safeMessages.length === 0) {
+      return new Response(JSON.stringify({ error: "لا رسائل صالحة" }), {
+        status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
     const KEY = Deno.env.get("LOVABLE_API_KEY");
     if (!KEY) throw new Error("LOVABLE_API_KEY missing");
 
@@ -38,7 +53,7 @@ serve(async (req) => {
         stream: true,
         messages: [
           { role: "system", content: SYSTEM + (profileLine ? "\n\n" + profileLine : "") },
-          ...messages,
+          ...safeMessages,
         ],
       }),
     });
@@ -64,7 +79,7 @@ serve(async (req) => {
     });
   } catch (e) {
     console.error("pro-coach error:", e);
-    return new Response(JSON.stringify({ error: e instanceof Error ? e.message : "Unknown" }), {
+    return new Response(JSON.stringify({ error: "خطأ في الخادم" }), {
       status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
   }

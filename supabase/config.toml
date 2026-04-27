@@ -1,16 +1,16 @@
 project_id = "kizqzupntymecstplxuv"
 
 [functions.food-lookup]
-verify_jwt = false
+verify_jwt = true
 
 [functions.pro-coach]
-verify_jwt = false
+verify_jwt = true
 
 [functions.posture-analyze]
-verify_jwt = false
+verify_jwt = true
 
 [functions.nutrition-plan]
-verify_jwt = false
+verify_jwt = true
 
 [functions.xray-bone-age]
-verify_jwt = false
+verify_jwt = true
