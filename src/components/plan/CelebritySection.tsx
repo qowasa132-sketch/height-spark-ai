@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Share2, Sparkles, Shuffle, Star } from "lucide-react";
 import { toast } from "sonner";
 import { SectionCard } from "./SectionCard";
+import { RewardGate } from "@/components/RewardGate";
 import { loadProfile } from "@/lib/profile";
 import { CELEBRITIES, getCelebrityMatch, getCategoryLabel, type Celebrity } from "@/lib/celebrities";
 import { cmToFtIn } from "@/lib/prediction";
@@ -84,14 +85,15 @@ export function CelebritySection() {
       title="توأم طولك من المشاهير"
       hint="شاركها على ستوري وتحدّى أصدقائك"
       right={
-        <button
-          type="button"
-          onClick={handleShuffle}
-          className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card/80 text-foreground transition-smooth hover:border-primary/50"
-          aria-label="مشهور آخر"
-        >
-          <Shuffle className="h-4 w-4" />
-        </button>
+        <RewardGate actionName="reveal another celebrity twin" onReward={handleShuffle}>
+          <button
+            type="button"
+            className="flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card/80 text-foreground transition-smooth hover:border-primary/50"
+            aria-label="مشهور آخر"
+          >
+            <Shuffle className="h-4 w-4" />
+          </button>
+        </RewardGate>
       }
     >
       <div

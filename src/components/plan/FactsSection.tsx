@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Lightbulb, Sparkles, ChevronRight, X } from "lucide-react";
 import { SectionCard } from "./SectionCard";
+import { RewardGate } from "@/components/RewardGate";
 import {
   HEIGHT_FACTS,
   FACT_CATEGORIES,
@@ -27,37 +28,42 @@ export function FactsSection() {
         title="حقائق عن الطول"
         hint="معلومات علمية مدهشة قد لا تعرفها"
         right={
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            className="rounded-full border border-border bg-background/40 px-2.5 py-1 text-[11px] font-semibold text-foreground"
-          >
-            استكشف الكل
-          </button>
+          <RewardGate actionName="explore all height facts" onReward={() => setOpen(true)}>
+            <button
+              type="button"
+              className="rounded-full border border-border bg-background/40 px-2.5 py-1 text-[11px] font-semibold text-foreground"
+            >
+              استكشف الكل
+            </button>
+          </RewardGate>
         }
       >
-        <button
-          type="button"
-          onClick={() => {
+        <RewardGate
+          actionName="reveal today's height fact"
+          onReward={() => {
             setSelected(daily);
             setOpen(true);
           }}
-          className="group flex w-full items-start gap-3 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-4 text-right"
         >
-          <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary/20 text-primary">
-            <Sparkles className="h-4 w-4" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-primary">
-              حقيقة اليوم
+          <button
+            type="button"
+            className="group flex w-full items-start gap-3 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 to-transparent p-4 text-right"
+          >
+            <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-xl bg-primary/20 text-primary">
+              <Sparkles className="h-4 w-4" />
             </div>
-            <div className="mt-0.5 text-sm font-bold text-foreground">{daily.title}</div>
-            <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
-              {daily.body}
-            </p>
-          </div>
-          <ChevronRight className="mt-1 h-4 w-4 flex-shrink-0 rotate-180 text-muted-foreground transition group-hover:text-foreground" />
-        </button>
+            <div className="min-w-0 flex-1">
+              <div className="text-[10px] font-bold uppercase tracking-wider text-primary">
+                حقيقة اليوم
+              </div>
+              <div className="mt-0.5 text-sm font-bold text-foreground">{daily.title}</div>
+              <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                {daily.body}
+              </p>
+            </div>
+            <ChevronRight className="mt-1 h-4 w-4 flex-shrink-0 rotate-180 text-muted-foreground transition group-hover:text-foreground" />
+          </button>
+        </RewardGate>
       </SectionCard>
 
       {open && (
@@ -133,20 +139,20 @@ export function FactsSection() {
                 <div className="max-h-[60vh] overflow-y-auto px-5 pb-6">
                   <div className="space-y-2">
                     {list.map((f) => (
-                      <button
-                        key={f.id}
-                        type="button"
-                        onClick={() => setSelected(f)}
-                        className="flex w-full items-start gap-3 rounded-2xl border border-border bg-background/40 p-3 text-right transition hover:border-primary/40"
-                      >
-                        <div className="min-w-0 flex-1">
-                          <div className="text-sm font-bold text-foreground">{f.title}</div>
-                          <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
-                            {f.body}
-                          </p>
-                        </div>
-                        <ChevronRight className="mt-1 h-4 w-4 flex-shrink-0 rotate-180 text-muted-foreground" />
-                      </button>
+                      <RewardGate key={f.id} actionName={`reveal "${f.title}"`} onReward={() => setSelected(f)}>
+                        <button
+                          type="button"
+                          className="flex w-full items-start gap-3 rounded-2xl border border-border bg-background/40 p-3 text-right transition hover:border-primary/40"
+                        >
+                          <div className="min-w-0 flex-1">
+                            <div className="text-sm font-bold text-foreground">{f.title}</div>
+                            <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground">
+                              {f.body}
+                            </p>
+                          </div>
+                          <ChevronRight className="mt-1 h-4 w-4 flex-shrink-0 rotate-180 text-muted-foreground" />
+                        </button>
+                      </RewardGate>
                     ))}
                   </div>
                 </div>
