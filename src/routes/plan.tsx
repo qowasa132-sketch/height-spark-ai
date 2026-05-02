@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Flame, Bell, Trophy, Dumbbell, Utensils, Moon, ChefHat, CheckSquare, Sparkles, BookOpen, Ruler, Pencil } from "lucide-react";
+import { Flame, Bell, Trophy } from "lucide-react";
 import { toast } from "sonner";
 import { BottomTabs } from "@/components/BottomTabs";
 import { loadProfile } from "@/lib/profile";
@@ -112,7 +112,30 @@ function PlanPage() {
           </div>
         </div>
 
-        <SectionTabs log={log} update={update} />
+        <SectionLockCard title="التغذية" actionName="فتح قسم التغذية">
+          <NutritionSection log={log} update={update} />
+        </SectionLockCard>
+        <SectionLockCard title="التمارين" actionName="فتح قسم التمارين">
+          <ExerciseSection log={log} update={update} />
+        </SectionLockCard>
+        <SectionLockCard title="الوصفات" actionName="فتح قسم الوصفات">
+          <RecipesSection log={log} update={update} />
+        </SectionLockCard>
+        <SectionLockCard title="النوم" actionName="فتح قسم النوم">
+          <SleepSection log={log} update={update} />
+        </SectionLockCard>
+        <SectionLockCard title="العادات" actionName="فتح قسم العادات">
+          <HabitsSection log={log} update={update} />
+        </SectionLockCard>
+        <SectionLockCard title="توأم طولك" actionName="فتح توأم طولك">
+          <CelebritySection />
+        </SectionLockCard>
+        <SectionLockCard title="حقائق عن الطول" actionName="فتح حقائق الطول">
+          <FactsSection />
+        </SectionLockCard>
+        <SectionLockCard title="القياسات" actionName="فتح القياسات">
+          <MeasurementsSection />
+        </SectionLockCard>
       </div>
 
       <BottomTabs active="free" />
@@ -120,80 +143,5 @@ function PlanPage() {
       {remindersOpen && <RemindersDrawer onClose={() => setRemindersOpen(false)} />}
       {badgesOpen && <BadgesDrawer onClose={() => setBadgesOpen(false)} />}
     </main>
-  );
-}
-
-type SectionKey = "exercises" | "nutrition" | "sleep" | "recipes" | "habits" | "celebrity" | "facts" | "measurements";
-
-const SECTIONS: Array<{ key: SectionKey; label: string; icon: typeof Dumbbell; action: string }> = [
-  { key: "exercises", label: "التمارين", icon: Dumbbell, action: "فتح قسم التمارين" },
-  { key: "nutrition", label: "التغذية", icon: Utensils, action: "فتح قسم التغذية" },
-  { key: "sleep", label: "النوم", icon: Moon, action: "فتح قسم النوم" },
-  { key: "recipes", label: "الوصفات", icon: ChefHat, action: "فتح قسم الوصفات" },
-  { key: "habits", label: "العادات", icon: CheckSquare, action: "فتح قسم العادات" },
-  { key: "celebrity", label: "توأم طولك", icon: Sparkles, action: "فتح توأم طولك" },
-  { key: "facts", label: "حقائق", icon: BookOpen, action: "فتح حقائق الطول" },
-  { key: "measurements", label: "القياسات", icon: Ruler, action: "فتح القياسات" },
-];
-
-function SectionTabs({ log, update }: { log: DailyLog; update: (patch: Partial<DailyLog>) => void }) {
-  const [active, setActive] = useState<SectionKey>("exercises");
-  const current = SECTIONS.find((s) => s.key === active)!;
-
-  const renderSection = () => {
-    switch (active) {
-      case "exercises": return <ExerciseSection log={log} update={update} />;
-      case "nutrition": return <NutritionSection log={log} update={update} />;
-      case "sleep": return <SleepSection log={log} update={update} />;
-      case "recipes": return <RecipesSection log={log} update={update} />;
-      case "habits": return <HabitsSection log={log} update={update} />;
-      case "celebrity": return <CelebritySection />;
-      case "facts": return <FactsSection />;
-      case "measurements": return <MeasurementsSection />;
-    }
-  };
-
-  return (
-    <>
-      {/* Pill tab bar */}
-      <div className="mt-5 flex items-center gap-2">
-        <div className="-mx-5 flex-1 overflow-x-auto px-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <div className="flex items-center gap-4 whitespace-nowrap">
-            {SECTIONS.map((s) => {
-              const isActive = s.key === active;
-              const Icon = s.icon;
-              return (
-                <button
-                  key={s.key}
-                  type="button"
-                  onClick={() => setActive(s.key)}
-                  className={`flex items-center gap-2 rounded-full transition-smooth ${
-                    isActive
-                      ? "bg-primary px-5 py-2.5 text-primary-foreground shadow-glow"
-                      : "px-1 py-2 text-muted-foreground"
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span className="text-sm font-semibold">{s.label}</span>
-                </button>
-              );
-            })}
-          </div>
-        </div>
-        <button
-          type="button"
-          aria-label="تخصيص"
-          className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-glow"
-        >
-          <Pencil className="h-4 w-4" />
-        </button>
-      </div>
-
-      <div className="mt-4">
-        <SectionLockCard key={active} title={current.label} actionName={current.action}>
-          {renderSection()}
-        </SectionLockCard>
-      </div>
-    </>
   );
 }
