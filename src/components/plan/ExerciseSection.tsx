@@ -2,6 +2,12 @@ import { Dumbbell, Check } from "lucide-react";
 import { SectionCard, ProgressBar } from "./SectionCard";
 import { RewardGate } from "@/components/RewardGate";
 import type { DailyLog } from "@/lib/dailyLog";
+import wallAngelVideo from "/public/exercises/wall-angel.mp4.asset.json";
+import chinTuckVideo from "/public/exercises/chin-tuck.mp4.asset.json";
+import catCowVideo from "/public/exercises/cat-cow.mp4.asset.json";
+import hangVideo from "/public/exercises/hang.mp4.asset.json";
+import cobraVideo from "/public/exercises/cobra.mp4.asset.json";
+import childPoseVideo from "/public/exercises/child-pose.mp4.asset.json";
 
 interface Exercise {
   id: string;
@@ -9,10 +15,10 @@ interface Exercise {
   category: "posture" | "stretch";
   durationSec: number;
   description: string;
-  // YouTube video ID for embed
-  videoId: string;
+  videoUrl: string;
   steps: string[];
 }
+
 
 const EXERCISES: Exercise[] = [
   // Posture
