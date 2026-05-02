@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { Dumbbell, Play, Check, X } from "lucide-react";
+import { Dumbbell, Check } from "lucide-react";
 import { SectionCard, ProgressBar } from "./SectionCard";
 import { RewardGate } from "@/components/RewardGate";
 import type { DailyLog } from "@/lib/dailyLog";
@@ -112,7 +111,6 @@ interface Props {
 const GOAL = 3;
 
 export function ExerciseSection({ log, update }: Props) {
-  const [active, setActive] = useState<Exercise | null>(null);
   const done = log.workoutsDone.length;
   const progress = (done / GOAL) * 100;
 
@@ -137,129 +135,67 @@ export function ExerciseSection({ log, update }: Props) {
       <div className="mb-3">
         <ProgressBar value={progress} />
       </div>
-      <div className="space-y-2">
+      <div className="space-y-4">
         {EXERCISES.map((ex) => {
           const isDone = log.workoutsDone.includes(ex.id);
           return (
             <div
               key={ex.id}
-              className={`flex items-center gap-2 rounded-2xl border-2 p-3 transition-smooth ${
+              className={`overflow-hidden rounded-2xl border-2 transition-smooth ${
                 isDone ? "border-primary bg-primary/10" : "border-border bg-background/40"
               }`}
             >
-              <RewardGate actionName={`mark "${ex.name}" as done`} onReward={() => toggleDone(ex.id)}>
-                <button
-                  type="button"
-                  aria-label={isDone ? "إلغاء" : "تم"}
-                  className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 transition-smooth ${
-                    isDone ? "border-primary bg-primary text-primary-foreground" : "border-border"
-                  }`}
-                >
-                  {isDone && <Check className="h-4 w-4" strokeWidth={3} />}
-                </button>
-              </RewardGate>
-              <RewardGate actionName={`watch "${ex.name}" video`} onReward={() => setActive(ex)}>
-                <button
-                  type="button"
-                  className="relative flex h-12 w-16 flex-shrink-0 items-center justify-center overflow-hidden rounded-xl bg-black"
-                  aria-label="معاينة"
-                >
-                  <img
-                    src={`https://i.ytimg.com/vi/${ex.videoId}/mqdefault.jpg`}
-                    alt=""
-                    className="h-full w-full object-cover opacity-80"
-                    loading="lazy"
-                  />
-                  <Play className="absolute h-4 w-4 text-white drop-shadow" fill="white" />
-                </button>
-              </RewardGate>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-sm font-semibold text-foreground">{ex.name}</span>
-                  <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">
-                    {ex.category === "posture" ? "وضعية" : "إطالة"}
-                  </span>
+              {/* Header */}
+              <div className="flex items-center gap-2 p-3">
+                <RewardGate actionName={`mark "${ex.name}" as done`} onReward={() => toggleDone(ex.id)}>
+                  <button
+                    type="button"
+                    aria-label={isDone ? "إلغاء" : "تم"}
+                    className={`flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 transition-smooth ${
+                      isDone ? "border-primary bg-primary text-primary-foreground" : "border-border"
+                    }`}
+                  >
+                    {isDone && <Check className="h-4 w-4" strokeWidth={3} />}
+                  </button>
+                </RewardGate>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-sm font-semibold text-foreground">{ex.name}</span>
+                    <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] text-muted-foreground">
+                      {ex.category === "posture" ? "وضعية" : "إطالة"}
+                    </span>
+                  </div>
+                  <p className="mt-0.5 text-[11px] text-muted-foreground">{ex.description}</p>
                 </div>
-                <p className="mt-0.5 truncate text-[11px] text-muted-foreground">{ex.description}</p>
               </div>
+
+              {/* Inline video */}
+              <div className="aspect-video w-full overflow-hidden bg-black">
+                <iframe
+                  className="h-full w-full"
+                  src={`https://www.youtube-nocookie.com/embed/${ex.videoId}?rel=0&modestbranding=1&playsinline=1`}
+                  title={ex.name}
+                  loading="lazy"
+                  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+
+              {/* Steps */}
+              <ol className="space-y-2 px-3 pt-3 pb-3">
+                {ex.steps.map((step, i) => (
+                  <li key={i} className="flex gap-2 text-xs text-foreground">
+                    <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary">
+                      {i + 1}
+                    </span>
+                    <span className="leading-relaxed">{step}</span>
+                  </li>
+                ))}
+              </ol>
             </div>
           );
         })}
       </div>
-
-      {active && (
-        <ExerciseModal
-          exercise={active}
-          onClose={() => setActive(null)}
-          onComplete={() => {
-            if (!log.workoutsDone.includes(active.id)) toggleDone(active.id);
-            setActive(null);
-          }}
-        />
-      )}
     </SectionCard>
-  );
-}
-
-function ExerciseModal({
-  exercise,
-  onClose,
-  onComplete,
-}: {
-  exercise: Exercise;
-  onClose: () => void;
-  onComplete: () => void;
-}) {
-  return (
-    <div
-      className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4"
-      onClick={onClose}
-    >
-      <div
-        className="relative max-h-[92vh] w-full max-w-md overflow-y-auto rounded-t-3xl border border-border bg-card p-6 shadow-glow sm:rounded-3xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <button
-          type="button"
-          onClick={onClose}
-          className="absolute end-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-muted text-foreground"
-          aria-label="إغلاق"
-        >
-          <X className="h-4 w-4" />
-        </button>
-        <h3 className="text-lg font-bold text-foreground">{exercise.name}</h3>
-        <p className="mt-1 text-xs text-muted-foreground">{exercise.description}</p>
-
-        {/* Real video */}
-        <div className="my-4 aspect-video w-full overflow-hidden rounded-2xl bg-black">
-          <iframe
-            className="h-full w-full"
-            src={`https://www.youtube-nocookie.com/embed/${exercise.videoId}?autoplay=1&rel=0&modestbranding=1&playsinline=1`}
-            title={exercise.name}
-            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-
-        <ol className="space-y-2">
-          {exercise.steps.map((step, i) => (
-            <li key={i} className="flex gap-2 text-xs text-foreground">
-              <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-primary/20 text-[10px] font-bold text-primary">
-                {i + 1}
-              </span>
-              <span className="leading-relaxed">{step}</span>
-            </li>
-          ))}
-        </ol>
-
-        <button
-          type="button"
-          onClick={onComplete}
-          className="mt-6 w-full rounded-2xl bg-gradient-primary py-3 text-sm font-bold text-primary-foreground shadow-glow transition-smooth hover:opacity-90"
-        >
-          تم الإنجاز ✓
-        </button>
-      </div>
-    </div>
   );
 }
