@@ -20,7 +20,11 @@ const ROWS: { key: keyof ReminderSettings; emoji: string; label: string; hint: s
 
 export function RemindersDrawer({ onClose }: { onClose: () => void }) {
   const [settings, setSettings] = useState<ReminderSettings>(loadReminderSettings());
-  const [perm, setPerm] = useState(getNotificationPermission());
+  const [perm, setPerm] = useState<PermState>(getNotificationPermission());
+
+  useEffect(() => {
+    void checkNativePermission().then(setPerm);
+  }, []);
 
   const setRow = async (key: keyof ReminderSettings, value: boolean) => {
     if (value && perm !== "granted" && perm !== "unsupported") {
