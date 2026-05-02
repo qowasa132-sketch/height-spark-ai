@@ -141,9 +141,18 @@ export const ar = {
     },
   },
   loading: {
+    title: "جارٍ بناء خطتك...",
+    progression: "التقدم",
     building: "جارٍ بناء خطتك المخصصة…",
     predicting: "جارٍ توقع طولك…",
     analyzing: "جارٍ تحليل عاداتك…",
+    steps: {
+      growthFactors: "تحليل عوامل النمو",
+      genetic: "فحص البيانات الجينية",
+      window: "رسم نافذة النمو",
+      plan: "بناء خطتك",
+      routine: "إعداد الروتين اليومي",
+    },
   },
   paywall: {
     title: "تم فتح إمكاناتك",

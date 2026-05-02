@@ -141,9 +141,18 @@ export const en = {
     },
   },
   loading: {
+    title: "Building your plan...",
+    progression: "progression",
     building: "Building your personalized plan…",
     predicting: "Predicting your height…",
     analyzing: "Analyzing your habits…",
+    steps: {
+      growthFactors: "Analyzing growth factors",
+      genetic: "Scanning genetic data",
+      window: "Mapping growth window",
+      plan: "Building your plan",
+      routine: "Setting daily routine",
+    },
   },
   paywall: {
     title: "Your Potential is Unlocked",
