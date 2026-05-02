@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { Flame, Bell, Trophy } from "lucide-react";
+import { Flame, Bell, Trophy, Dumbbell, Utensils, Moon, ChefHat, CheckSquare, Sparkles, BookOpen, Ruler, Pencil } from "lucide-react";
 import { toast } from "sonner";
 import { BottomTabs } from "@/components/BottomTabs";
 import { loadProfile } from "@/lib/profile";
@@ -112,30 +112,7 @@ function PlanPage() {
           </div>
         </div>
 
-        <SectionLockCard title="التغذية" actionName="فتح قسم التغذية">
-          <NutritionSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="التمارين" actionName="فتح قسم التمارين">
-          <ExerciseSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="الوصفات" actionName="فتح قسم الوصفات">
-          <RecipesSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="النوم" actionName="فتح قسم النوم">
-          <SleepSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="العادات" actionName="فتح قسم العادات">
-          <HabitsSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="توأم طولك" actionName="فتح توأم طولك">
-          <CelebritySection />
-        </SectionLockCard>
-        <SectionLockCard title="حقائق عن الطول" actionName="فتح حقائق الطول">
-          <FactsSection />
-        </SectionLockCard>
-        <SectionLockCard title="القياسات" actionName="فتح القياسات">
-          <MeasurementsSection />
-        </SectionLockCard>
+        <SectionTabs log={log} update={update} />
       </div>
 
       <BottomTabs active="free" />
