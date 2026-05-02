@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Home as HomeIcon, Apple, Sparkles } from "lucide-react";
+import { Home as HomeIcon, Apple, Sparkles, Users } from "lucide-react";
 
-type Tab = "home" | "free" | "premium" | "ai";
+type Tab = "home" | "free" | "premium" | "ai" | "community";
 
 export function BottomTabs({ active }: { active: Tab }) {
   const tabs = [
     { id: "home" as const, label: "الرئيسية", icon: HomeIcon, to: "/home" as const },
     { id: "free" as const, label: "خطتي", icon: Apple, to: "/plan" as const },
+    { id: "community" as const, label: "المجتمع", icon: Users, to: "/community" as const },
     { id: "ai" as const, label: "برو", icon: Sparkles, to: "/pro" as const },
   ];
   return (
