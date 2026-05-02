@@ -175,15 +175,16 @@ export function ExerciseSection({ log, update }: Props) {
                 </div>
               </div>
 
-              {/* Inline video */}
+              {/* Inline AI-generated animation */}
               <div className="aspect-video w-full overflow-hidden bg-black">
-                <iframe
-                  className="h-full w-full"
-                  src={`https://www.youtube-nocookie.com/embed/${ex.videoId}?rel=0&modestbranding=1&playsinline=1`}
-                  title={ex.name}
-                  loading="lazy"
-                  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+                <video
+                  className="h-full w-full object-cover"
+                  src={ex.videoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
                 />
               </div>
 
