@@ -28,7 +28,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 60,
     description: "يصحّح انحناء الكتفين ويستقيم العمود الفقري.",
-    videoId: "1UU4VvklQ44",
+    videoUrl: wallAngelVideo.url,
     steps: [
       "قف وظهرك ملتصق بالجدار، قدماك على بُعد ١٥ سم منه.",
       "ارفع ذراعيك على شكل حرف Y مع لمس الجدار.",
@@ -42,7 +42,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 45,
     description: "يصحّح وضعية الرأس الأمامية ويُطيل الرقبة.",
-    videoId: "KqR1EoEmq9c",
+    videoUrl: chinTuckVideo.url,
     steps: [
       "اجلس باستقامة وانظر للأمام.",
       "اسحب ذقنك للخلف كأنك تصنع ذقناً مزدوجة.",
@@ -56,7 +56,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 90,
     description: "يحسّن مرونة العمود الفقري بكامل امتداده.",
-    videoId: "y39PrKY_4JM",
+    videoUrl: catCowVideo.url,
     steps: [
       "ابدأ على الأربع، اليدين تحت الكتفين والركبتين تحت الوركين.",
       "استنشق وانزل البطن واسحب الرأس لأعلى (بقرة).",
@@ -71,7 +71,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يفك ضغط العمود الفقري ويزيد المسافة بين الفقرات.",
-    videoId: "9eY15prKcUY",
+    videoUrl: hangVideo.url,
     steps: [
       "أمسك بار العقلة بقبضة عريضة قليلاً.",
       "علّق بثقل جسمك مع استرخاء الكتفين.",
@@ -85,7 +85,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يطيل الجزء الأمامي من الجذع ويُحسّن مرونة الظهر.",
-    videoId: "k48O2CxvZ3o",
+    videoUrl: cobraVideo.url,
     steps: [
       "استلقِ على بطنك واليدين تحت الكتفين.",
       "ادفع جذعك لأعلى مع إبقاء الحوض على الأرض.",
@@ -99,7 +99,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يُريح أسفل الظهر والوركين.",
-    videoId: "kH12QrSGedM",
+    videoUrl: childPoseVideo.url,
     steps: [
       "اجلس على ركبتيك واجعل قدميك متلامستين.",
       "انحنِ للأمام بذراعين ممدودتين.",
