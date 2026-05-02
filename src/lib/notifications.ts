@@ -1,6 +1,9 @@
-// Lightweight reminder system. Uses Web Notifications API when granted,
+// Reminder system. On iOS/Android (Capacitor) uses Local Notifications API to
+// schedule real OS notifications. On the web uses Web Notifications API,
 // otherwise falls back to in-app sonner toasts.
 import { toast } from "sonner";
+import { Capacitor } from "@capacitor/core";
+import { LocalNotifications, type ScheduleOptions } from "@capacitor/local-notifications";
 
 export interface ReminderSettings {
   bedtime: boolean; // 10pm
@@ -19,6 +22,14 @@ export const DEFAULT_SETTINGS: ReminderSettings = {
   measurements: true,
 };
 
+const isNative = () => {
+  try {
+    return Capacitor.isNativePlatform();
+  } catch {
+    return false;
+  }
+};
+
 export function loadReminderSettings(): ReminderSettings {
   if (typeof window === "undefined") return DEFAULT_SETTINGS;
   try {
@@ -32,10 +43,29 @@ export function loadReminderSettings(): ReminderSettings {
 export function saveReminderSettings(s: ReminderSettings) {
   if (typeof window === "undefined") return;
   localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+  // Re-sync native schedule whenever settings change.
+  if (isNative()) {
+    void syncNativeSchedule(s);
+  }
 }
 
-export async function requestNotificationPermission(): Promise<NotificationPermission> {
-  if (typeof window === "undefined" || !("Notification" in window)) return "denied";
+export type PermState = NotificationPermission | "unsupported";
+
+export async function requestNotificationPermission(): Promise<PermState> {
+  if (typeof window === "undefined") return "denied";
+
+  // Native (iOS / Android) — real OS prompt.
+  if (isNative()) {
+    try {
+      const res = await LocalNotifications.requestPermissions();
+      return res.display === "granted" ? "granted" : "denied";
+    } catch {
+      return "denied";
+    }
+  }
+
+  // Web fallback.
+  if (!("Notification" in window)) return "unsupported";
   if (Notification.permission === "granted" || Notification.permission === "denied") {
     return Notification.permission;
   }
@@ -46,10 +76,98 @@ export async function requestNotificationPermission(): Promise<NotificationPermi
   }
 }
 
-export function getNotificationPermission(): NotificationPermission | "unsupported" {
-  if (typeof window === "undefined" || !("Notification" in window)) return "unsupported";
+export function getNotificationPermission(): PermState {
+  if (typeof window === "undefined") return "denied";
+  if (isNative()) {
+    // Native permission is fetched async; assume granted-or-prompt allowed.
+    // Use checkNativePermission() for an accurate value.
+    return "default";
+  }
+  if (!("Notification" in window)) return "unsupported";
   return Notification.permission;
 }
+
+export async function checkNativePermission(): Promise<PermState> {
+  if (!isNative()) return getNotificationPermission();
+  try {
+    const res = await LocalNotifications.checkPermissions();
+    return res.display === "granted" ? "granted" : res.display === "denied" ? "denied" : "default";
+  } catch {
+    return "denied";
+  }
+}
+
+// ---------- Native scheduling ----------
+
+// Stable IDs per slot (must be 32-bit int).
+const NATIVE_IDS = {
+  bedtime: 1001,
+  exercise: 1002,
+  measurements: 1003,
+  // Water: 1100 + hour
+};
+
+async function syncNativeSchedule(s: ReminderSettings) {
+  if (!isNative()) return;
+  try {
+    // Cancel all our previously scheduled notifications first.
+    const pending = await LocalNotifications.getPending();
+    if (pending.notifications.length) {
+      await LocalNotifications.cancel({ notifications: pending.notifications.map((n) => ({ id: n.id })) });
+    }
+
+    const toSchedule: ScheduleOptions["notifications"] = [];
+
+    if (s.bedtime) {
+      toSchedule.push({
+        id: NATIVE_IDS.bedtime,
+        title: "وقت النوم 🌙",
+        body: "أوقف الشاشات الآن واذهب للنوم — هرمون النمو يُفرز في النوم العميق.",
+        schedule: { on: { hour: 22, minute: 0 }, allowWhileIdle: true },
+      });
+    }
+    if (s.exercise) {
+      toSchedule.push({
+        id: NATIVE_IDS.exercise,
+        title: "وقت التمرين 🏃",
+        body: "١٥ دقيقة تمدد أو تمارين كافية لتحفيز هرمون النمو.",
+        schedule: { on: { hour: 18, minute: 0 }, allowWhileIdle: true },
+      });
+    }
+    if (s.measurements) {
+      toSchedule.push({
+        id: NATIVE_IDS.measurements,
+        title: "قياس أسبوعي 📏",
+        body: "سجّل طولك ووزنك لمتابعة تقدمك.",
+        // weekday: 1 = Sunday in Capacitor's schedule.on
+        schedule: { on: { weekday: 1, hour: 9, minute: 0 }, allowWhileIdle: true },
+      });
+    }
+    if (s.water) {
+      for (let h = 9; h <= 21; h += 2) {
+        toSchedule.push({
+          id: 1100 + h,
+          title: "اشرب الماء 💧",
+          body: "كأس ماء الآن يساعد نمو العظام والمفاصل.",
+          schedule: { on: { hour: h, minute: 0 }, allowWhileIdle: true },
+        });
+      }
+    }
+
+    if (toSchedule.length) {
+      await LocalNotifications.schedule({ notifications: toSchedule });
+    }
+  } catch (err) {
+    console.warn("Failed to sync native notifications", err);
+  }
+}
+
+export async function ensureNativeSchedule() {
+  if (!isNative()) return;
+  await syncNativeSchedule(loadReminderSettings());
+}
+
+// ---------- Web/in-app fallback (when app is open in browser) ----------
 
 function fire(slot: string, title: string, body: string) {
   if (typeof window === "undefined") return;
@@ -61,7 +179,6 @@ function fire(slot: string, title: string, body: string) {
   }
   if (fired[slot]) return;
   fired[slot] = Date.now();
-  // Keep map small
   const cutoff = Date.now() - 1000 * 60 * 60 * 48;
   for (const k of Object.keys(fired)) if (fired[k] < cutoff) delete fired[k];
   localStorage.setItem(FIRED_KEY, JSON.stringify(fired));
@@ -71,7 +188,7 @@ function fire(slot: string, title: string, body: string) {
       new Notification(title, { body, icon: "/favicon.ico" });
       return;
     } catch {
-      /* fall through to toast */
+      /* fall through */
     }
   }
   toast(title, { description: body });
@@ -84,10 +201,10 @@ function dayKey(d = new Date()) {
   return `${y}-${m}-${day}`;
 }
 
-// Check current time against schedule and fire any due reminders.
-// Called periodically from a React effect while the app is open.
+// Web only — on native the OS handles scheduling, no need to tick.
 export function tickReminders(s: ReminderSettings) {
   if (typeof window === "undefined") return;
+  if (isNative()) return;
   const now = new Date();
   const h = now.getHours();
   const m = now.getMinutes();
