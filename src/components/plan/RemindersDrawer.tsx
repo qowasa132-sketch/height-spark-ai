@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Bell, X } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -6,7 +6,9 @@ import {
   saveReminderSettings,
   requestNotificationPermission,
   getNotificationPermission,
+  checkNativePermission,
   type ReminderSettings,
+  type PermState,
 } from "@/lib/notifications";
 
 const ROWS: { key: keyof ReminderSettings; emoji: string; label: string; hint: string }[] = [
