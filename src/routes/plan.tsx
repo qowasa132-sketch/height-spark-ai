@@ -18,7 +18,6 @@ import { HabitsSection } from "@/components/plan/HabitsSection";
 import { FactsSection } from "@/components/plan/FactsSection";
 import { CelebritySection } from "@/components/plan/CelebritySection";
 import { MeasurementsSection } from "@/components/plan/MeasurementsSection";
-import { SectionLockCard } from "@/components/plan/SectionLockCard";
 import { RemindersDrawer } from "@/components/plan/RemindersDrawer";
 import { BadgesDrawer } from "@/components/plan/BadgesDrawer";
 import { evaluateBadges, BADGES } from "@/lib/badges";
@@ -112,30 +111,14 @@ function PlanPage() {
           </div>
         </div>
 
-        <SectionLockCard title="التغذية" actionName="فتح قسم التغذية">
-          <NutritionSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="التمارين" actionName="فتح قسم التمارين">
-          <ExerciseSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="الوصفات" actionName="فتح قسم الوصفات">
-          <RecipesSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="النوم" actionName="فتح قسم النوم">
-          <SleepSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="العادات" actionName="فتح قسم العادات">
-          <HabitsSection log={log} update={update} />
-        </SectionLockCard>
-        <SectionLockCard title="توأم طولك" actionName="فتح توأم طولك">
-          <CelebritySection />
-        </SectionLockCard>
-        <SectionLockCard title="حقائق عن الطول" actionName="فتح حقائق الطول">
-          <FactsSection />
-        </SectionLockCard>
-        <SectionLockCard title="القياسات" actionName="فتح القياسات">
-          <MeasurementsSection />
-        </SectionLockCard>
+        <NutritionSection log={log} update={update} />
+        <ExerciseSection log={log} update={update} />
+        <RecipesSection log={log} update={update} />
+        <SleepSection log={log} update={update} />
+        <HabitsSection log={log} update={update} />
+        <CelebritySection />
+        <FactsSection />
+        <MeasurementsSection />
       </div>
 
       <BottomTabs active="free" />
