@@ -2,6 +2,12 @@ import { Dumbbell, Check } from "lucide-react";
 import { SectionCard, ProgressBar } from "./SectionCard";
 import { RewardGate } from "@/components/RewardGate";
 import type { DailyLog } from "@/lib/dailyLog";
+import wallAngelVideo from "../../../public/exercises/wall-angel.mp4.asset.json";
+import chinTuckVideo from "../../../public/exercises/chin-tuck.mp4.asset.json";
+import catCowVideo from "../../../public/exercises/cat-cow.mp4.asset.json";
+import hangVideo from "../../../public/exercises/hang.mp4.asset.json";
+import cobraVideo from "../../../public/exercises/cobra.mp4.asset.json";
+import childPoseVideo from "../../../public/exercises/child-pose.mp4.asset.json";
 
 interface Exercise {
   id: string;
@@ -9,10 +15,10 @@ interface Exercise {
   category: "posture" | "stretch";
   durationSec: number;
   description: string;
-  // YouTube video ID for embed
-  videoId: string;
+  videoUrl: string;
   steps: string[];
 }
+
 
 const EXERCISES: Exercise[] = [
   // Posture
@@ -22,7 +28,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 60,
     description: "يصحّح انحناء الكتفين ويستقيم العمود الفقري.",
-    videoId: "1UU4VvklQ44",
+    videoUrl: wallAngelVideo.url,
     steps: [
       "قف وظهرك ملتصق بالجدار، قدماك على بُعد ١٥ سم منه.",
       "ارفع ذراعيك على شكل حرف Y مع لمس الجدار.",
@@ -36,7 +42,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 45,
     description: "يصحّح وضعية الرأس الأمامية ويُطيل الرقبة.",
-    videoId: "KqR1EoEmq9c",
+    videoUrl: chinTuckVideo.url,
     steps: [
       "اجلس باستقامة وانظر للأمام.",
       "اسحب ذقنك للخلف كأنك تصنع ذقناً مزدوجة.",
@@ -50,7 +56,7 @@ const EXERCISES: Exercise[] = [
     category: "posture",
     durationSec: 90,
     description: "يحسّن مرونة العمود الفقري بكامل امتداده.",
-    videoId: "y39PrKY_4JM",
+    videoUrl: catCowVideo.url,
     steps: [
       "ابدأ على الأربع، اليدين تحت الكتفين والركبتين تحت الوركين.",
       "استنشق وانزل البطن واسحب الرأس لأعلى (بقرة).",
@@ -65,7 +71,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يفك ضغط العمود الفقري ويزيد المسافة بين الفقرات.",
-    videoId: "9eY15prKcUY",
+    videoUrl: hangVideo.url,
     steps: [
       "أمسك بار العقلة بقبضة عريضة قليلاً.",
       "علّق بثقل جسمك مع استرخاء الكتفين.",
@@ -79,7 +85,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يطيل الجزء الأمامي من الجذع ويُحسّن مرونة الظهر.",
-    videoId: "k48O2CxvZ3o",
+    videoUrl: cobraVideo.url,
     steps: [
       "استلقِ على بطنك واليدين تحت الكتفين.",
       "ادفع جذعك لأعلى مع إبقاء الحوض على الأرض.",
@@ -93,7 +99,7 @@ const EXERCISES: Exercise[] = [
     category: "stretch",
     durationSec: 60,
     description: "يُريح أسفل الظهر والوركين.",
-    videoId: "kH12QrSGedM",
+    videoUrl: childPoseVideo.url,
     steps: [
       "اجلس على ركبتيك واجعل قدميك متلامستين.",
       "انحنِ للأمام بذراعين ممدودتين.",
@@ -169,15 +175,16 @@ export function ExerciseSection({ log, update }: Props) {
                 </div>
               </div>
 
-              {/* Inline video */}
+              {/* Inline AI-generated animation */}
               <div className="aspect-video w-full overflow-hidden bg-black">
-                <iframe
-                  className="h-full w-full"
-                  src={`https://www.youtube-nocookie.com/embed/${ex.videoId}?rel=0&modestbranding=1&playsinline=1`}
-                  title={ex.name}
-                  loading="lazy"
-                  allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
+                <video
+                  className="h-full w-full object-cover"
+                  src={ex.videoUrl}
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  preload="metadata"
                 />
               </div>
 
